@@ -1,0 +1,148 @@
+.hero-section {
+  position: relative;
+  width: 100vw;         
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;   
+  margin-right: -50vw;
+
+  min-height: 100vh;
+  margin-top: 0;
+  margin-bottom: 0;
+  padding: 0;
+
+   
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+
+  background: linear-gradient(to bottom, #22d3ee,#3891da, #13389c);
+}
+
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+
+.particles {
+position: absolute;
+inset: 0;
+
+}
+ 
+
+.hero-section .particle {
+  position: relative;
+  width: 0.5rem; 
+  height: 0.5rem; 
+  background-color: rgba(255, 255, 255, 0.616); 
+  border-radius: 50%;
+}
+
+
+.hero-section .content {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  padding: 0 1.5rem; 
+  max-width: 80rem; 
+  margin: 0 auto;
+  color: rgb(255, 255, 255);
+}
+
+
+.hero-section .logo-wrapper {
+  width: 4rem; 
+  height: 4rem;
+  margin: 0 auto;
+  background-color: rgba(27, 120, 136, 0.2); 
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(6, 182, 212, 0.3); 
+  backdrop-filter: blur(5px);
+  margin-bottom: 1.5rem; 
+}
+
+
+.hero-section h1 {
+  color: #ffffff;  
+  font-size: 1rem; 
+  margin-bottom: 1.5rem;
+  font-weight: 400;
+}
+
+
+.hero-section p {
+  color: #bff2ff; 
+  font-size: 1.3rem; 
+  margin-bottom: 2.5rem; 
+  max-width: 48rem; 
+  margin-left: auto;
+  margin-right: auto; 
+}
+
+
+.hero-section .buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem; 
+  justify-content: center;
+}
+
+
+.hero-section .hero-button {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border-radius: 0.5rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+
+.hero-section .hero-button.explore {
+  background-color: #00d1f1b7; 
+  color: white;
+  box-shadow: 0 10px 15px rgba(34, 211, 238, 0.3); 
+}
+
+
+.hero-section .hero-button.explore:hover {
+  background-color: #06b6d4; 
+}
+
+
+.hero-section .hero-button.join {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(5px);
+}
+
+
+.hero-section .hero-button.join:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+
+.hero-section .scroll-down {
+  position: absolute;
+  bottom: 2.5rem; 
+  left: 50%;
+  transform: translateX(-50%);
+  animation: bounce 2s infinite ease-in-out;
+  color: #22d3ee;
+}
+
+
+@keyframes bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(10px); }
+}
