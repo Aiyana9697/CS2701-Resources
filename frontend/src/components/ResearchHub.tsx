@@ -79,20 +79,32 @@ export function ResearchHub() {
         </motion.div>
 
         <Tabs defaultValue="datasets" className="w-full">
-          <TabsList className="grid w-full max-w-2xl mx-auto grid-cols-3 mb-8 bg-slate-800/50 border border-cyan-500/20">
-            <TabsTrigger value="datasets" className="data-[state=active]:bg-cyan-500 data-[state=active]:text-white">
-              <Database className="w-4 h-4 mr-2" />
+          <TabsList className="grid w-full max-w-2xl mx-auto grid-cols-3 mb-8 bg-slate-800/50 border border-cyan-500/20 rounded-lg overflow-hidden">
+            <TabsTrigger
+              value="datasets"
+              className="flex items-center justify-center gap-2 h-9 px-3 text-sm font-medium text-slate-300 data-[state=active]:bg-cyan-500 data-[state=active]:text-white"
+            >
+              <Database className="w-3.5 h-3.5" />
               Datasets
             </TabsTrigger>
-            <TabsTrigger value="discussions" className="data-[state=active]:bg-cyan-500 data-[state=active]:text-white">
-              <MessageSquare className="w-4 h-4 mr-2" />
+
+            <TabsTrigger
+              value="discussions"
+              className="flex items-center justify-center gap-2 h-9 px-3 text-sm font-medium text-slate-300 data-[state=active]:bg-cyan-500 data-[state=active]:text-white"
+            >
+              <MessageSquare className="w-3.5 h-3.5" />
               Discussions
             </TabsTrigger>
-            <TabsTrigger value="upload" className="data-[state=active]:bg-cyan-500 data-[state=active]:text-white">
-              <Upload className="w-4 h-4 mr-2" />
+
+            <TabsTrigger
+              value="upload"
+              className="flex items-center justify-center gap-2 h-9 px-3 text-sm font-medium text-slate-300 data-[state=active]:bg-cyan-500 data-[state=active]:text-white"
+            >
+              <Upload className="w-3.5 h-3.5" />
               Upload
             </TabsTrigger>
           </TabsList>
+
 
           <TabsContent value="datasets">
             <Card className="bg-slate-800/50 border-cyan-500/20 backdrop-blur-sm p-6">

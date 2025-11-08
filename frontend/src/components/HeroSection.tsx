@@ -1,16 +1,34 @@
 import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
 import { Button } from './ui/button';
 import { Waves, ChevronDown } from 'lucide-react';
 
 export function HeroSection() {
+
+  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+
+  useEffect(() => {
+    // Update screen size on load and resize
+    const updateSize = () => {
+      setDimensions({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
+    updateSize();
+    window.addEventListener("resize", updateSize);
+    return () => window.removeEventListener("resize", updateSize);
+  }, []);
+
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-cyan-400 via-blue-600 to-blue-950">
       {/* Animated background particles */}
       <div className="absolute inset-0">
-        {[...Array(20)].map((_, i) => (
+        {[...Array(45)].map((_, i) => (
           <motion.div
             key={i}
-            className="absolute w-2 h-2 bg-cyan-300/30 rounded-full"
+            className="absolute w-2 h-2 bg-cyan-300/60 rounded-full"
             initial={{
               x: Math.random() * window.innerWidth,
               y: Math.random() * window.innerHeight,
@@ -29,20 +47,6 @@ export function HeroSection() {
         ))}
       </div>
 
-      {/* Wave animation overlay */}
-      <motion.div
-        className="absolute bottom-0 left-0 right-0 h-32"
-        animate={{
-          y: [0, -10, 0],
-        }}
-        transition={{
-          duration: 4,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-      >
-        <Waves className="w-full h-full text-blue-950/30" strokeWidth={0.5} />
-      </motion.div>
 
       {/* Content */}
       <div className="relative z-10 text-center px-6 max-w-5xl mx-auto">
