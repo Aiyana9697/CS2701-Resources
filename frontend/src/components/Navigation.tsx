@@ -32,7 +32,7 @@ export function Navigation() {
         animate={{ y: 0 }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           isScrolled
-            ? 'bg-slate-950/95 backdrop-blur-md border-b border-cyan-500/20 shadow-lg'
+            ? 'bg-slate-950/90 backdrop-blur-md border-b border-cyan-500/20 shadow-lg'
             : 'bg-transparent'
         }`}
       >
@@ -40,8 +40,8 @@ export function Navigation() {
           <div className="flex items-center justify-between">
             {/* Logo */}
             <div className="flex items-center gap-2">
-              <div className="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center backdrop-blur-sm border border-cyan-400/30">
-                <Waves className="w-6 h-6 text-cyan-400" />
+              <div className="w-10 h-10 bg-cyan-500/50 rounded-lg flex items-center justify-center backdrop-blur-sm border border-cyan-400/30">
+                <Waves className="w-6 h-6 text-cyan-300" />
               </div>
               <span className="text-white">OceanSDG</span>
             </div>
@@ -52,7 +52,7 @@ export function Navigation() {
                 <a
                   key={index}
                   href={link.href}
-                  className="text-slate-300 hover:text-cyan-400 transition-colors text-sm"
+                  className="text-white hover:text-cyan-400 transition-colors text-sm"
                 >
                   {link.label}
                 </a>
@@ -65,7 +65,7 @@ export function Navigation() {
                 variant="ghost"
                 size="sm"
                 onClick={toggleTheme}
-                className="text-slate-300 hover:text-cyan-400 hover:bg-cyan-500/10"
+                className="text-white hover:text-cyan-400 hover:bg-cyan-500/10"
               >
                 {theme === 'dark' ? (
                   <Sun className="w-5 h-5" />
