@@ -3,6 +3,9 @@ import { Card } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { Microscope, Fish, Leaf, Waves, ChevronRight, BookOpen } from 'lucide-react';
+import MarineSpeciesImage from '../assets/Marine Species Protection.jpeg';
+import SedimentPlumesImage from '../assets/Sediment Plumes.jpeg';
+
 import { ImageWithFallback } from './ImageWithFallback';
 
 const educationalTopics = [
@@ -12,7 +15,7 @@ const educationalTopics = [
     description: 'Understanding the environmental impact of deep-sea mining on sediment distribution and marine ecosystems.',
     level: 'Intermediate',
     duration: '15 min read',
-    image: 'https://images.unsplash.com/photo-1613213322190-b9eb59313eec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxkZWVwJTIwb2NlYW4lMjB1bmRlcndhdGVyfGVufDF8fHx8MTc2MjE5MTk4MXww&ixlib=rb-4.1.0&q=80&w=1080',
+    image: SedimentPlumesImage,
   },
   {
     icon: Fish,
@@ -20,7 +23,7 @@ const educationalTopics = [
     description: 'Explore the diverse marine life in deep-sea environments and conservation strategies.',
     level: 'Beginner',
     duration: '12 min read',
-    image: 'https://images.unsplash.com/photo-1761590699238-6f763c27f012?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb3JhbCUyMHJlZWYlMjBiaW9kaXZlcnNpdHl8ZW58MXx8fHwxNzYyMTkxOTgxfDA&ixlib=rb-4.1.0&q=80&w=1080',
+    image: MarineSpeciesImage,
   },
   {
     icon: Microscope,

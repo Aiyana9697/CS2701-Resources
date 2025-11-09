@@ -12,7 +12,11 @@ const navLinks = [
   { label: 'Impact', href: '#impact' },
 ];
 
-export function Navigation() {
+interface NavigationProps {
+  onGetStarted?: () => void;
+}
+
+export function Navigation({ onGetStarted }: NavigationProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
@@ -32,7 +36,7 @@ export function Navigation() {
         animate={{ y: 0 }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           isScrolled
-            ? 'bg-slate-950/90 backdrop-blur-md border-b border-cyan-500/20 shadow-lg'
+            ? 'bg-slate-950/95 backdrop-blur-md border-b border-cyan-500/20 shadow-lg'
             : 'bg-transparent'
         }`}
       >
@@ -40,7 +44,7 @@ export function Navigation() {
           <div className="flex items-center justify-between">
             {/* Logo */}
             <div className="flex items-center gap-2">
-              <div className="w-10 h-10 bg-cyan-500/50 rounded-lg flex items-center justify-center backdrop-blur-sm border border-cyan-400/30">
+              <div className="w-10 h-10 bg-cyan-500/70 rounded-lg flex items-center justify-center backdrop-blur-sm border border-cyan-400/30">
                 <Waves className="w-6 h-6 text-cyan-300" />
               </div>
               <span className="text-white">OceanSDG</span>
@@ -76,6 +80,7 @@ export function Navigation() {
               
               <Button
                 size="sm"
+                onClick={onGetStarted}
                 className="hidden md:inline-flex bg-cyan-500 hover:bg-cyan-600 text-white"
               >
                 Get Started
@@ -119,7 +124,13 @@ export function Navigation() {
                   {link.label}
                 </a>
               ))}
-              <Button className="bg-cyan-500 hover:bg-cyan-600 text-white w-full">
+              <Button
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  onGetStarted?.();
+                }}
+                className="bg-cyan-500 hover:bg-cyan-600 text-white w-full"
+              >
                 Get Started
               </Button>
             </div>
