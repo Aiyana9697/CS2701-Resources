@@ -66,7 +66,7 @@ export function AuthPage({ onBack }: AuthPageProps) {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           onClick={onBack}
-          className="absolute top-10 left-6 z-20 flex items-center gap-2 text-white hover:text-white transition-colors"
+          className="absolute top-5 left-6 z-20 flex items-center gap-2 text-white hover:text-white transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />
           <span>Back to Home</span>
