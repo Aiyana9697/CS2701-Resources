@@ -185,7 +185,7 @@ export function ImpactTracker() {
           <Card className="bg-slate-900/50 border-cyan-500/20 backdrop-blur-sm p-6">
             <h3 className="text-white mb-6 text-center">Ocean Area Protection Status</h3>
             <div className="flex flex-col lg:flex-row items-center justify-center gap-8">
-              <ResponsiveContainer width="100%" height={300} className="max-w-md">
+              <ResponsiveContainer width={500} height={300} className="max-w-md">
                 <PieChart>
                   <Pie
                     data={protectionData}
@@ -194,7 +194,7 @@ export function ImpactTracker() {
                     labelLine={false}
                     label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
                     outerRadius={100}
-                    fill="#8884d8"
+                    fill= "#06b6d4"
                     dataKey="value"
                   >
                     {protectionData.map((entry, index) => (
@@ -203,11 +203,13 @@ export function ImpactTracker() {
                   </Pie>
                   <Tooltip
                     contentStyle={{
-                      backgroundColor: '#1e293b',
+                      backgroundColor: '#1e293b', 
                       border: '1px solid #06b6d4',
                       borderRadius: '8px',
                       color: '#fff',
                     }}
+                    labelStyle={{ color: '#cbd5e1' }}   
+                    itemStyle={{ color: '#cbd5e1' }}
                   />
                 </PieChart>
               </ResponsiveContainer>
