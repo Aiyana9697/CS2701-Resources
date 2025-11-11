@@ -97,7 +97,7 @@ export function AuthPage({ onBack }: AuthPageProps) {
                 <Waves className="w-8 h-8 text-cyan-300" />
               </div>
             </motion.div>
-            <h2 className="text-white mb-2">Welcome to OceanSDG</h2>
+            <h2 className="text-white mb-2">Welcome to OceanIQ</h2>
             <p className="text-cyan-200">Join us in protecting our oceans</p>
           </div>
 

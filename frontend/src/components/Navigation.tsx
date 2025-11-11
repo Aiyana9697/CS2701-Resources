@@ -47,7 +47,7 @@ export function Navigation({ onGetStarted }: NavigationProps) {
               <div className="w-10 h-10 bg-cyan-500/70 rounded-lg flex items-center justify-center backdrop-blur-sm border border-cyan-400/30">
                 <Waves className="w-6 h-6 text-cyan-300" />
               </div>
-              <span className="text-white">OceanSDG</span>
+              <span className="text-white">OceanIQ</span>
             </div>
 
             {/* Desktop Navigation */}

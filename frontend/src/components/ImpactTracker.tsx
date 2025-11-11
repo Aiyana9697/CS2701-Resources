@@ -201,7 +201,7 @@ export function ImpactTracker() {
                       <Cell key={`cell-${index}`} fill={entry.color} />
                     ))}
                   </Pie>
-                  <Tooltip
+                  <Tooltip 
                     contentStyle={{
                       backgroundColor: '#1e293b', 
                       border: '1px solid #06b6d4',

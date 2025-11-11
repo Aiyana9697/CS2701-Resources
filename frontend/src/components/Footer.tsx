@@ -41,7 +41,7 @@ export function Footer() {
               <div className="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center">
                 <Waves className="w-6 h-6 text-cyan-400" />
               </div>
-              <span className="text-white">OceanSDG</span>
+              <span className="text-white">OceanIQ</span>
             </div>
             <p className="text-slate-400 text-sm mb-4">
               A unified digital platform bridging science, policy, and public awareness for sustainable ocean conservation.
@@ -147,7 +147,7 @@ export function Footer() {
 
         {/* Copyright */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-slate-500 text-sm">
-          <p>© 2025 OceanSDG Platform. All rights reserved.</p>
+          <p>© 2025 OceanIQ Platform. All rights reserved.</p>
           <p>
             Built with commitment to{' '}
             <span className="text-cyan-400">SDG14: Life Below Water</span>
