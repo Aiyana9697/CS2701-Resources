@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Card } from './ui/card';
 import { Badge } from './ui/badge';
-import { MapPin, Info, ZoomIn } from 'lucide-react';
+import { Map, Info, ZoomIn } from 'lucide-react';
 import { Button } from './ui/button';
 
 interface MapRegion {
@@ -44,8 +44,12 @@ export function InteractiveMap() {
           viewport={{ once: true }}
           className="text-center mb-12"
         >
+          <div className="inline-flex items-center gap-2 bg-cyan-500/10 border border-cyan-500/30 rounded-full px-4 py-2 mb-4">
+            <Map className="w-4 h-4 text-cyan-400" />
+            <span className="text-cyan-300 text-sm">Interactive Map</span>
+          </div>
           <h2 className="text-white mb-4">Interactive Ocean Map</h2>
-          <p className="text-cyan-300 text-xl max-w-3xl mx-auto">
+          <p className="text-slate-400 text-xl max-w-3xl mx-auto">
             Explore seabed regions, biodiversity hotspots, and protected marine areas
           </p>
         </motion.div>

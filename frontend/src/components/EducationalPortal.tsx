@@ -2,10 +2,11 @@ import { motion } from 'framer-motion';
 import { Card } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
-import { Microscope, Fish, Leaf, Waves, ChevronRight, BookOpen } from 'lucide-react';
+import { Microscope, Fish, Leaf, Waves, ChevronRight, GraduationCap } from 'lucide-react';
 import MarineSpeciesImage from '../assets/Marine Species Protection.jpeg';
 import SedimentPlumesImage from '../assets/Sediment Plumes.jpeg';
-
+import ProtectedAreasImage from '../assets/APEIs & Protected Areas.jpeg';
+import SustainabilityImage from '../assets/Sustainability Framework.jpeg';
 import { ImageWithFallback } from './ImageWithFallback';
 
 const educationalTopics = [
@@ -31,7 +32,7 @@ const educationalTopics = [
     description: 'Areas of Particular Environmental Interest and their role in sustainable ocean management.',
     level: 'Advanced',
     duration: '20 min read',
-    image: 'https://images.unsplash.com/photo-1583326187695-01fb3e059569?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxvY2VhbiUyMHRlY2hub2xvZ3klMjByZXNlYXJjaHxlbnwxfHx8fDE3NjIxOTE5ODJ8MA&ixlib=rb-4.1.0&q=80&w=1080',
+    image: ProtectedAreasImage,
   },
   {
     icon: Leaf,
@@ -39,7 +40,7 @@ const educationalTopics = [
     description: 'Learn about SDG14 implementation and sustainable deep-sea exploration practices.',
     level: 'Intermediate',
     duration: '18 min read',
-    image: 'https://images.unsplash.com/photo-1710023961072-492b4bed6ecc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtYXJpbmUlMjBjb25zZXJ2YXRpb258ZW58MXx8fHwxNzYyMTkxOTgyfDA&ixlib=rb-4.1.0&q=80&w=1080',
+    image: SustainabilityImage,
   },
 ];
 
@@ -63,7 +64,7 @@ export function EducationalPortal() {
           className="text-center mb-12"
         >
           <div className="inline-flex items-center gap-2 bg-cyan-500/10 border border-cyan-500/30 rounded-full px-4 py-2 mb-4">
-            <BookOpen className="w-4 h-4 text-cyan-400" />
+            <GraduationCap className="w-4 h-4 text-cyan-400" />
             <span className="text-cyan-300 text-sm">Educational Portal</span>
           </div>
           <h2 className="text-white mb-4">Learn About Ocean Conservation</h2>

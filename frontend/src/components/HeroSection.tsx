@@ -25,7 +25,7 @@ export function HeroSection() {
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-cyan-400 via-blue-600 to-blue-950">
       {/* Animated background particles */}
       <div className="absolute inset-0">
-        {[...Array(45)].map((_, i) => (
+        {[...Array(30)].map((_, i) => (
           <motion.div
             key={i}
             className="absolute w-2 h-2 bg-cyan-300/60 rounded-full"
@@ -39,7 +39,7 @@ export function HeroSection() {
               opacity: [0.2, 0.6, 0.2],
             }}
             transition={{
-              duration: 10 + Math.random() * 10,
+              duration: 10 + Math.random() * 20,
               repeat: Infinity,
               ease: "linear",
             }}
