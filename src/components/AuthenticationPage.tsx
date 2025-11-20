@@ -26,12 +26,58 @@ export function AuthPage({ onBack }: AuthPageProps) {
     e.preventDefault();
     console.log('Login:', loginData);
     // Add your login logic here
+  
+    const email = loginData.email.trim();
+    const password = loginData.password.trim();
+
+   // email follows a proper format 
+if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+    alert("Invalid Email Address. Please enter your email address again.");
+    return false;
+}
+// check password is at least 8 characters long
+if(password.trim().length<8 ){
+    alert("Password must be at least 8 characters long.")
+    return false;
+}
   };
 
   const handleRegister = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Register:', registerData);
     // Add your registration logic here
+
+    const FullName = registerData.name.trim();
+    const email = registerData.email.trim();
+    const password = registerData.password.trim();
+    const confirmPassword = registerData.confirmPassword.trim();
+    
+    // fullname validation
+if(!/^[A-Za-z']+(?:\s+[A-Za-z']+)+$/.test(FullName)){
+alert("Invalid Full Name. Please enter your full name (first and last).");
+return;
+}
+
+// email validation
+if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+    alert("Invalid Email Address. Please enter your email address again.");
+    return;
+}
+// password validation
+if(password.trim().length<8 ){
+    alert("Password must be at least 8 characters long.")
+    return;
+}
+// password confirmation
+if(password!==confirmPassword){
+    alert("Passwords do not match. please re-enter your password.");
+    return;
+}
+// terms agreement
+if(!agreedToTerms){
+alert("Please agree to the terms and conditions before submitting.");
+return;
+}
   };
 
   return (
@@ -200,7 +246,7 @@ export function AuthPage({ onBack }: AuthPageProps) {
 
               {/* Register Tab */}
               <TabsContent value="register" className="p-6">
-                <form onSubmit={handleRegister} className="space-y-4">
+                <form onSubmit= {handleRegister} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="register-name" className="text-cyan-100">
                       Full Name
@@ -236,7 +282,8 @@ export function AuthPage({ onBack }: AuthPageProps) {
                           setRegisterData({ ...registerData, email: e.target.value })
                         }
                         className="pl-10 bg-white/5 border-cyan-400/30 text-white placeholder:text-slate-300 focus:border-cyan-400 focus:ring-cyan-400/50"
-                        required
+                        required // tells browser that the email field must not be empty
+                                 // required is used to default the error message("please fill out this field")
                       />
                     </div>
                   </div>
