@@ -1,19 +1,34 @@
+/*
+UI component that creates a styled accordion (list where sections can be expanded / collapsed) using Radix UI 
+each section has: 
+- a trigger (header) that can be clicked to expand / collapse the section
+- hidden content that is revealed when the section is expanded
+*/
+
 import * as React from "react";
 import * as AccordionPrimitive from "@radix-ui/react-accordion";
 import { ChevronDownIcon } from "lucide-react";
-
 import { cn } from "./utils";
 
+/*
+defines the main Accordion component that wraps the Radix AccordionPrimitive.Root component (which manages the accordion state and behaviour)
+passes down any recieved props and adds a data-slot attribute which can be used for styling 
+*/
 function Accordion({
   ...props
 }: React.ComponentProps<typeof AccordionPrimitive.Root>) {
   return <AccordionPrimitive.Root data-slot="accordion" {...props} />;
 }
 
+/*
+wraps the Radix AccordionPrimitive.Item component representing each item in the accordion
+passes down any recieved props and classname 
+adds a data-slot attribute for styling and applies default border to separate each item visually
+*/
 function AccordionItem({
   className,
-  ...props
-}: React.ComponentProps<typeof AccordionPrimitive.Item>) {
+  ...props}: 
+  React.ComponentProps<typeof AccordionPrimitive.Item>) {
   return (
     <AccordionPrimitive.Item
       data-slot="accordion-item"

@@ -1,3 +1,9 @@
+/*
+React component for rendering a research hub section that includes 3 main features: 
+- Datasets - allows users to browse, search and download a list of datasets
+- Discussions - Displays current research discussion threads with replies / timestamps
+- Upload - Form where users can upload new datasets with name, description and file
+*/
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Card } from './ui/card';
@@ -8,6 +14,7 @@ import { Textarea } from './ui/textarea';
 import { Upload, Users, MessageSquare, Database, Search } from 'lucide-react';
 import { Badge } from './ui/badge';
 
+/* defines an array of discussion thread objects with id, author, role, title, number of replies and timestamp */
 const discussions = [
   {
     id: 1,
@@ -35,6 +42,7 @@ const discussions = [
   },
 ];
 
+/* defines an array of dataset objects with name, type, size and number of downloads */
 const datasets = [
   {
     name: 'Pacific Biodiversity Survey 2024',
@@ -56,9 +64,20 @@ const datasets = [
   },
 ];
 
+/*
+defines a local state where: 
+- searchQuery stores what the user inputs into the dataset search bar
+- setSearchQuery function is used to ipdate the searchQuery state
+*/
 export function ResearchHub() {
   const [searchQuery, setSearchQuery] = useState('');
 
+  /* 
+  Creates a full-width section with top-bottom and side padding with dark slate background
+  Centers the content and limits max width to keep content from stretching too wide 
+  animation - fades in and slides up the entire section when it appears
+  viewport - animates the first time the section comes into view, not every scroll
+  */
   return (
     <section className="py-20 px-6 bg-gradient-to-b from-slate-900 to-slate-950">
       <div className="max-w-7xl mx-auto">
@@ -68,6 +87,12 @@ export function ResearchHub() {
           viewport={{ once: true }}
           className="text-center mb-12"
         >
+          {/* 
+          Defines the Collaborative Research label that appears above the main title 
+          contains a lucide-react Users icon and text is light cyan in colour 
+          the label is contained within a rounded capsule shape with a light cyan border and darker background
+          defines the main white title and subtitle below it
+          */}
           <div className="inline-flex items-center gap-2 bg-teal-500/10 border border-teal-500/30 rounded-full px-4 py-2 mb-4">
             <Users className="w-4 h-4 text-teal-400" />
             <span className="text-teal-300 text-sm">Collaborative Research</span>
@@ -78,6 +103,12 @@ export function ResearchHub() {
           </p>
         </motion.div>
 
+        {/* 
+        calls upon the Tabs component in tabs.tsx to create tabbed interface with 3 tabs for Datasets, Discussions and Upload
+        default tab = Datasets so when page first loads, Datasets tab is shown
+        TabsList defines the tab buttons container with grid layout, max width, centered horizontally, dark slate background, cyan border with rounded corners
+        TabsTrigger creates a labeled button for each tab with lucide-react icon, padding, font size / weight, light slate text that changes to white when tab is active
+        */}
         <Tabs defaultValue="datasets" className="w-full">
           <TabsList className="grid w-full max-w-2xl mx-auto grid-cols-3 mb-8 bg-slate-800/50 border border-cyan-500/20 rounded-lg overflow-hidden">
             <TabsTrigger
@@ -105,7 +136,18 @@ export function ResearchHub() {
             </TabsTrigger>
           </TabsList>
 
+          {/* 
+          defines the content for each tab by wrapping it in TabsContent component that matches the tab's value
+          card container has semi-transparent dark slate background, cyan border and backdrop blur
+          organises the search input and filter button side by side with a gap between them, bottom margin and padding
 
+          search input: 
+          - search input has a lucide-react search icon inside, placeholder text, background, border and white text
+          - when the user types in the search input, the setSearchQuery function updates the searchQuery state
+
+          filter button:
+          - button has cyan background that darkens on hover and white text
+          */}
           <TabsContent value="datasets">
             <Card className="bg-slate-800/50 border-cyan-500/20 backdrop-blur-sm p-6">
               <div className="flex items-center gap-4 mb-6">
@@ -123,6 +165,19 @@ export function ResearchHub() {
                 </Button>
               </div>
 
+              {/* 
+              creates vertical list of dataset cards with spacing between them by mapping through the datasets array
+              each dataset card starts slghtly left then fades into center when it appears, with a staggered effect based on items index
+              each dataset card is rendered with a dark slate background that intensifies on hover, cyan border, padding
+
+              on the left side of the card: 
+              - dataset name is displayed in white with margin below
+              - dataset type is shown within a badge with semi-transparent dark slate background and light slate text
+              - dataset size and number of downloads are shown beside the badge in light slate text
+
+              on the right side of the card: 
+              - download button is styled with a cyan border, cyan text and dark background that lightens slightly on hover
+              */}
               <div className="space-y-4">
                 {datasets.map((dataset, index) => (
                   <motion.div
@@ -154,6 +209,20 @@ export function ResearchHub() {
             </Card>
           </TabsContent>
 
+          {/* 
+          section is displayed when the user select the 'Discussions' tab
+          each dicussion card is styled with semi-transparent dark slate background that intensifies on hover, cyan border, padding
+          the discussions array is mapped through to render each discussion card 
+          animation - each card fades in and slides in from the left when it appears, with a staggered effect based on index
+
+          on each discussion card:
+          - discussion title is displayed in white with margin below
+          - author name is shown in cyan with role beside it in light slate text
+          - number of replies is shown within a badge with semi-transparent cyan background and text on the right side of the card 
+          - timestamp is displayed in light slate text at the bottom
+
+          at the bottom of the section, a full-width button is defined that allows users to start a new discussion
+          */}
           <TabsContent value="discussions">
             <Card className="bg-slate-800/50 border-cyan-500/20 backdrop-blur-sm p-6">
               <div className="space-y-4">
@@ -188,6 +257,16 @@ export function ResearchHub() {
             </Card>
           </TabsContent>
 
+          {/* 
+          section is displayed when the user select the 'Upload' tab
+          each upload card is styled with semi-transparent dark slate background that intensifies on hover, cyan border, padding
+
+          the upload form contains:
+          - input for dataset name with label, placeholder text, background, border and white text
+          - textarea for dataset description with label, placeholder text, number of rows, background, border and white text
+          - file upload area with dashed border, rounded corners, padding, centered text and icon, hover effect to change border colour
+          - full-width button to submit the upload with cyan background that darkens on hover and white text
+          */}
           <TabsContent value="upload">
             <Card className="bg-slate-800/50 border-cyan-500/20 backdrop-blur-sm p-6">
               <div className="space-y-6">

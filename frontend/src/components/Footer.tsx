@@ -1,6 +1,19 @@
+/* 
+React componenet that renders a footer that includes: 
+- Brand section with logo, name, description, and social media icons
+- Three columns of navigational links; Platform, Resources, Legal
+- Partners section displaying partner names 
+- Copyright info 
+*/
 import { Waves, Mail, Github, Linkedin, Twitter } from 'lucide-react';
 import { Separator } from './ui/separator';
 
+/* 
+footerlinks - bject containing 3 keys where each key's value is an array of link objects 
+Each link object has a label (text displayed to the user) and href property (URL the link points to, currently placeholder # values)
+
+partners - array of strings cotaining partner names shown in the partners section
+*/
 const footerLinks = {
   platform: [
     { label: 'About', href: '#about' },
@@ -29,6 +42,22 @@ const partners = [
   'Marine Conservation Alliance',
 ];
 
+
+/* 
+creates a footer element with a dark background and cyan accents
+centers the footer content and limits its maximum width so it doesn't stretch too wide
+
+creates a grid layout for the main footer: 
+- 1 column on small screens
+- 2 columns on medium screens
+- 4 columns on large screen
+
+brand container occupies the 1st column 
+flex layout used to arrange logo and name horizontally with a gap 
+logo box has a cyan background and contains a waves lucide-react icon 
+brand description is in light slate colour with smaller text size
+each social media icon is contained within a square button with hover effects
+*/
 export function Footer() {
   return (
     <footer className="bg-slate-950 border-t border-cyan-500/20">
@@ -74,7 +103,14 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Platform Links */}
+          {/*
+          footerLinks array is mapped over to create 3 columns of navigational links
+          each column has a heading in white text with margin below
+          each link is displayed in light slate colour with hover effects and smaller text size
+          2 units of vertical space between each link
+
+          separator component creates a horizontal line between the 3 columns of links
+           */}
           <div>
             <h4 className="text-white mb-4">Platform</h4>
             <ul className="space-y-2">
@@ -91,7 +127,6 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Resources Links */}
           <div>
             <h4 className="text-white mb-4">Resources</h4>
             <ul className="space-y-2">
@@ -108,7 +143,6 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Legal Links */}
           <div>
             <h4 className="text-white mb-4">Legal</h4>
             <ul className="space-y-2">
@@ -128,7 +162,11 @@ export function Footer() {
 
         <Separator className="bg-slate-800 mb-8" />
 
-        {/* Partners Section */}
+        {/*
+        partners array is mapped over to display partner names in a flex container 
+        each partner name is within a box with padding, semi-transparent dark slate background, light slate text and hover effects
+        separator component creates a horizontal line between the 3 columns of links
+        */}
         <div className="mb-8">
           <h4 className="text-white mb-4 text-center">Our Partners</h4>
           <div className="flex flex-wrap items-center justify-center gap-6">
@@ -145,7 +183,7 @@ export function Footer() {
 
         <Separator className="bg-slate-800 mb-6" />
 
-        {/* Copyright */}
+        {/* Displays copyright info and SDG14 commitment*/}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-slate-500 text-sm">
           <p>© 2025 OceanIQ Platform. All rights reserved.</p>
           <p>
