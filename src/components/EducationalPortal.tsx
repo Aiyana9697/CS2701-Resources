@@ -1,3 +1,14 @@
+/* 
+React component for an educational portal displaying a grid of cards on marine-specific educational topics 
+each card includes: 
+- background image called upon from assets folder
+- Licude-react icons 
+- title & description
+- colour coded difficulty level badge (beginner / intermediate / advanced) 
+- estimated reading duration 
+- a 'Start Learning' button with an arrow icon
+*/
+
 import { motion } from 'framer-motion';
 import { Card } from './ui/card';
 import { Badge } from './ui/badge';
@@ -9,6 +20,10 @@ import ProtectedAreasImage from '../assets/APEIs & Protected Areas.jpeg';
 import SustainabilityImage from '../assets/Sustainability Framework.jpeg';
 import { ImageWithFallback } from './ImageWithFallback';
 
+/* 
+Array of objects representing topics shown in educational portal 
+each object dessribes one topic card
+*/
 const educationalTopics = [
   {
     icon: Waves,
@@ -44,6 +59,10 @@ const educationalTopics = [
   },
 ];
 
+/* 
+Utility function that takes in a topic's difficulty level and returns corresponding style for the level badge
+if the function takes in a level that is not recognised, it returns a default grey style
+*/
 const getLevelColor = (level: string) => {
   switch (level) {
     case 'Beginner': return 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30';
@@ -53,7 +72,18 @@ const getLevelColor = (level: string) => {
   }
 };
 
+
+/* 
+Renders the header area including the background, title, subtitle, animation of the topic cards
+*/
 export function EducationalPortal() {
+
+  /* 
+  Creates a full-width section with top-bottom and side padding with dark slate background
+  Centers the content and limits max width to keep content from stretching too wide 
+  animation - fades in and slides up the entire section when it appears
+  viewport - animates the first time the section comes into view, not every scroll
+  */
   return (
     <section className="py-20 px-6 bg-slate-900">
       <div className="max-w-7xl mx-auto">
@@ -63,15 +93,36 @@ export function EducationalPortal() {
           viewport={{ once: true }}
           className="text-center mb-12"
         >
+          {/* 
+          Defines the Educational Portal label that appears above the main title 
+          contains a lucide-react graduation cap icon and text is light cyan in colour 
+          the label is contained within a rounded capsule shape with a light cyan border and darker background
+          defines the main white title and subtitle below it
+          */}
           <div className="inline-flex items-center gap-2 bg-cyan-500/10 border border-cyan-500/30 rounded-full px-4 py-2 mb-4">
             <GraduationCap className="w-4 h-4 text-cyan-400" />
             <span className="text-cyan-300 text-sm">Educational Portal</span>
           </div>
+
           <h2 className="text-white mb-4">Learn About Ocean Conservation</h2>
           <p className="text-slate-400 text-xl max-w-3xl mx-auto">
             Interactive resources, infographics, and expert insights on deep-sea ecosystems
           </p>
         </motion.div>
+
+        {/* 
+        Creates / defines a grid layout for the topic cards: 
+        - 1 column on small screens 
+        - 2 columns on medium screens
+        - 4 columns on large screens
+        - gap between grid items
+
+        EducationalTopics array is mapped (iterated) over to create a card for each topic 
+        Icon is extracted from each topic object to be used within the card
+        Animation: 
+        - each card fades in and slides up when it appears once
+        - depending on the index of the card, each card appears 0.1s after the previous one for a staggered effect
+        */}
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {educationalTopics.map((topic, index) => {
@@ -84,6 +135,13 @@ export function EducationalPortal() {
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
               >
+                {/* 
+                defines the card's layout and styles: 
+                - semi-transparennt dark slate background with cynan border which intensifies on hover
+                - Image has a fixed image area and calls the ImageWithFallback component to display a fallback image if the main image fails to load
+                - Image has a dark-transparent gradient overlay 
+                - Icon is placed within a rounded circle at the image's top-left corner
+                */}
                 <Card className="bg-slate-800/50 border-cyan-500/20 backdrop-blur-sm overflow-hidden h-full flex flex-col group hover:border-cyan-500/50 transition-all duration-300">
                   <div className="relative h-48 overflow-hidden">
                     <ImageWithFallback
@@ -97,6 +155,13 @@ export function EducationalPortal() {
                     </div>
                   </div>
                   
+                  {/* 
+                  defines a container for the card's content with padding and flex layout to ensure the 'Start Learning' button is at the bottom of the container 
+                  topic title is displayed in white with margin below
+                  topic description is displayed in light slate colour with flex layout to ensure the card heights are equal 
+                  getLevelColour() function is called to get the corresponding styles for the difficulty level badge
+                  Start Learning button is styled with cyan text, hover effects and contains arrow icon
+                  */}
                   <div className="p-6 flex-1 flex flex-col">
                     <h3 className="text-white mb-2">{topic.title}</h3>
                     <p className="text-slate-400 text-sm mb-4 flex-1">{topic.description}</p>
@@ -122,6 +187,11 @@ export function EducationalPortal() {
           })}
         </div>
 
+        {/* 
+        renders 'View All Resources' button at the bottom of the section 
+        animation - fades in the button once when section appears 
+        button is large sized with white text, cyan background and hover effects
+        */} 
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
