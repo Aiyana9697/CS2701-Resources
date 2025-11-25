@@ -49,6 +49,7 @@ export function AuthPage({ onBack }: AuthPageProps) {
 
     const email = loginData.email.trim();
     const password = loginData.password.trim();
+    const regex = /[^A-Za-z0-9]/; // for special characters in the password
 
     // email format validation
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -56,10 +57,16 @@ export function AuthPage({ onBack }: AuthPageProps) {
       return;
     }
 
-    // password length validation
+    // password validations
     if (password.length < 8) {
       alert("Password must be at least 8 characters long.");
       return;
+    }
+    if (regex.test(password)){
+      alert("password must contain at least one special character(!,@,&,etc.)")
+    }
+    if (!/[0-9]/.test(password)){
+      alert("password must contain at least one number")
     }
 
     console.log("Login:", loginData);
@@ -76,6 +83,7 @@ export function AuthPage({ onBack }: AuthPageProps) {
     const email = registerData.email.trim();
     const password = registerData.password.trim();
     const confirmPassword = registerData.confirmPassword.trim();
+    const regex = /[^A-Za-z0-9]/; // for special characters in the password
 
     // full name validation
     if (!/^[A-Za-z']+(?:\s+[A-Za-z']+)+$/.test(fullName)) {
@@ -89,10 +97,16 @@ export function AuthPage({ onBack }: AuthPageProps) {
       return;
     }
 
-    // password validation
+    // password validations
     if (password.length < 8) {
       alert("Password must be at least 8 characters long.");
       return;
+    }
+    if (regex.test(password)){
+      alert("password must contain at least one special character(!,@,&,etc.)")
+    }
+    if (!/[0-9]/.test(password)){
+      alert("password must contain at least one number")
     }
 
     // password match
