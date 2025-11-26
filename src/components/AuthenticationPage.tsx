@@ -21,6 +21,7 @@ import { FloatingParticles } from './ui/FloatingParticles';
 
 interface AuthPageProps {
   onBack?: () => void;
+  onLoginSuccess: () => void; 
 }
 
 /* 
@@ -32,7 +33,7 @@ Defines AuthPage compomnent which:
   - Stops the page from refreshing when the form is submitted 
   - Prints the form data to the console (placeholder for actual auth logic) 
 */
-export function AuthPage({ onBack }: AuthPageProps) {
+export function AuthPage({ onBack, onLoginSuccess }: AuthPageProps) {
   const [loginData, setLoginData] = useState({ email: '', password: '' });
   const [registerData, setRegisterData] = useState({
     name: '',
@@ -46,83 +47,66 @@ export function AuthPage({ onBack }: AuthPageProps) {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('Login:', loginData);
 
+    // Add login logic here
     const email = loginData.email.trim();
     const password = loginData.password.trim();
-    const regex = /[^A-Za-z0-9]/; // for special characters in the password
 
-    // email format validation
+    // email follows a proper format 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      alert("Invalid Email Address. Please enter your email again.");
+      alert("Invalid Email Address. Please enter your email address again.");
       return;
     }
 
-    // password validations
+   // check password is at least 8 characters long
     if (password.length < 8) {
       alert("Password must be at least 8 characters long.");
       return;
     }
-    if (regex.test(password)){
-      alert("password must contain at least one special character(!,@,&,etc.)")
-    }
-    if (!/[0-9]/.test(password)){
-      alert("password must contain at least one number")
-    }
 
-    console.log("Login:", loginData);
+    // If we get here, login was successful
+    console.log("Login successful!");
 
-    // Optional redirect logic goes here
-    // if (onLoginSuccess) onLoginSuccess();
-    onLoginSuccess(); // ⭐ TRIGGER redirect to homepage
+    onLoginSuccess();  // TRIGGER redirect to homepage
   };
 
   const handleRegister = (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('Register:', registerData);
 
-    const fullName = registerData.name.trim();
+    // Add registration logic here
+    const FullName = registerData.name.trim();
     const email = registerData.email.trim();
     const password = registerData.password.trim();
     const confirmPassword = registerData.confirmPassword.trim();
-    const regex = /[^A-Za-z0-9]/; // for special characters in the password
 
-    // full name validation
-    if (!/^[A-Za-z']+(?:\s+[A-Za-z']+)+$/.test(fullName)) {
-      alert("Invalid Full Name. Please enter your first and last name.");
-      return;
+    if(!/^[A-Za-z']+(?:\s+[A-Za-z']+)+$/.test(FullName)){
+    alert("Invalid Full Name. Please enter your full name (first and last).");
+    return;
     }
 
-    // email format validation
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      alert("Invalid Email Address. Please enter your email again.");
-      return;
+    // email validation
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+        alert("Invalid Email Address. Please enter your email address again.");
+        return;
     }
-
-    // password validations
-    if (password.length < 8) {
-      alert("Password must be at least 8 characters long.");
-      return;
+    // password validation
+    if(password.length<8 ){
+        alert("Password must be at least 8 characters long.")
+        return;
     }
-    if (regex.test(password)){
-      alert("password must contain at least one special character(!,@,&,etc.)")
+    // password confirmation
+    if(password!==confirmPassword){
+        alert("Passwords do not match. please re-enter your password.");
+        return;
     }
-    if (!/[0-9]/.test(password)){
-      alert("password must contain at least one number")
+    // terms agreement
+    if(!agreedToTerms){
+    alert("Please agree to the terms and conditions before submitting.");
+    return;
     }
-
-    // password match
-    if (password !== confirmPassword) {
-      alert("Passwords do not match. Please try again.");
-      return;
-    }
-
-    // terms agreement validation
-    if (!agreedToTerms) {
-      alert("Please agree to the Terms and Privacy Policy.");
-      return;
-    }
-
-    console.log("Register:", registerData);
-  };
+      };
 
 
 /*
@@ -148,6 +132,7 @@ Defines the main container for the page and ensures it:
 
       {onBack && (
         <motion.button
+
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           onClick={onBack}
