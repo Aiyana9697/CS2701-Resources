@@ -64,13 +64,33 @@ const datasets = [
   },
 ];
 
+
+
 /*
 defines a local state where: 
 - searchQuery stores what the user inputs into the dataset search bar
-- setSearchQuery function is used to ipdate the searchQuery state
+- setSearchQuery function is used to update the searchQuery state
 */
 export function ResearchHub() {
+  // search bar state
   const [searchQuery, setSearchQuery] = useState('');
+
+  // controls whether the checkbox popup window is open or closed
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+  // stores which checkbox options were selected
+  const [selected, setSelected] = useState<string[]>([]);
+
+  // handles checking and unchecking options in the popup
+  const toggleOption = (value: string) => {
+    setSelected(prev =>
+      prev.includes(value)
+        ? prev.filter(v => v !== value)   // remove if already selected
+        : [...prev, value]                // add if not selected
+    );
+  };
+
+
 
   /* 
   Creates a full-width section with top-bottom and side padding with dark slate background
@@ -160,10 +180,16 @@ export function ResearchHub() {
                     className="pl-10 bg-slate-900/50 border-slate-700 text-white"
                   />
                 </div>
-                <Button className="bg-cyan-500 hover:bg-cyan-600 text-white">
+                {/* open the popup when clicking Filter */}
+                <Button
+                  className="bg-cyan-500 hover:bg-cyan-600 text-white"
+                  onClick={() => setIsFilterOpen(true)}
+                >
                   Filter
                 </Button>
               </div>
+
+              
 
               {/* 
               creates vertical list of dataset cards with spacing between them by mapping through the datasets array
@@ -304,6 +330,70 @@ export function ResearchHub() {
           </TabsContent>
         </Tabs>
       </div>
+      
+      {/* 
+      Popup overlay that appears on top of the page.
+      It only gets rendered when isFilterOpen === true.
+    */}
+    {isFilterOpen && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+        
+        {/* Popup card container */}
+        <div className="bg-slate-900 border border-cyan-500/30 rounded-lg p-6 w-full max-w-sm">
+
+          {/* Title of the popup */}
+          <h3 className="text-white text-lg mb-3">Filter options</h3>
+
+          {/* Checkbox list */}
+          <div className="space-y-2 mb-4">
+
+            {/* Loop through your checkbox items */}
+            {["By Downloads (most popular)", "new",].map((opt) => (
+              <label key={opt} className="flex items-center gap-2 text-slate-300">
+
+                {/* 
+                  Checkbox input. 
+                  "checked" shows whether this option is in the selected array.
+                */}
+                <input
+                  type="checkbox"
+                  checked={selected.includes(opt)}
+                  onChange={() => toggleOption(opt)}   // call toggle when clicked
+                  className="h-4 w-4"
+                />
+
+                {/* Name of the checkbox option */}
+                {opt}
+              </label>
+            ))}
+          </div>
+
+            {/* Buttons at the bottom of the popup */}
+            <div className="flex justify-end gap-2">
+              
+              {/* Close popup without applying changes */}
+              <Button
+                variant="outline"
+                className="border border-slate-600 text-slate-300"
+                onClick={() => setIsFilterOpen(false)}
+              >
+                Cancel
+              </Button>
+
+              {/* Apply selections + close popup (you can add filtering logic later) */}
+              <Button
+                className="bg-cyan-500 hover:bg-cyan-600 text-white"
+                onClick={() => setIsFilterOpen(false)}
+              >
+                Apply
+              </Button>
+
+            </div>
+          </div>
+        </div>
+      )}
+
+
     </section>
   );
 }
