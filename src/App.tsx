@@ -9,15 +9,32 @@ import { ResearchHub } from './components/ResearchHub';
 import { ImpactTracker } from './components/ImpactTracker';
 import { Footer } from './components/Footer';
 import { AuthPage } from './components/AuthenticationPage';
+import { HomePage } from './components/HomePage';
 
 export default function App() {
-  const [currentView, setCurrentView] = useState<'home' | 'auth'>('home');
+  const [currentView, setCurrentView] = useState<'home' | 'auth' | 'dashboard'>('home');
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const handleLogin = () => {
+    setIsAuthenticated(true);
+    setCurrentView('dashboard');
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    setCurrentView('home');
+  };
 
   return (
     <ThemeProvider>
       <div className="min-h-screen bg-slate-950 text-white">
         {currentView === 'auth' ? (
-          <AuthPage onBack={() => setCurrentView('home')} />
+          <AuthPage 
+          onBack={() => setCurrentView('home')}
+          onLoginSuccess={handleLogin}
+          />
+        ) : currentView === 'dashboard' && isAuthenticated ? (
+          <HomePage onLogout={handleLogout} />
         ) : (
           <>
             <Navigation onGetStarted={() => setCurrentView('auth')} />

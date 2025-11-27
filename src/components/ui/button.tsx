@@ -1,11 +1,35 @@
+/*
+UI component used to display a button with different colour styles (default, destructive, outline, secondary, ghost, link) and sizes (default, sm, lg, icon)
+Slot - allows the button to style different HTML element if needed (e.g. a link)
+cva - class variance authority defines and manage the different style variants for the button
+cn - utility function that combines multiple class names together 
+*/
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
-
 import { cn } from "./utils";
 
-const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
+/*
+defines the base style that all button variants share (inline flex container with rounded corners, padding, font size, etc)
+variants: 
+- default: uses apps main primary colour for background and text 
+- destructive: bright red background and white text
+- outline: no background, just border and text
+- secondary: background uses a secondary / softer colour
+- ghost: transparent background with hover effects
+- link: looks like a text link with underline on hover
+
+sizes:
+- default: standard button height and padding
+- sm: smaller height and padding
+- lg: larger height and padding
+- icon: square button sized to fit an icon
+
+if no variant or size is passed to the Button component, the default variant and size are applied
+(styles defined in globals.css)
+*/
+export const buttonVariants = cva(
+  "inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium bg-opacity-0 text-white px-4 py-2 hover:bg-blue-500",
   {
     variants: {
       variant: {
@@ -34,7 +58,13 @@ const buttonVariants = cva(
   },
 );
 
-function Button({
+/*
+badge components that accepts className for custom styling, variant to select the button style, asChild to decide what HTML element gets styled, and props to pass down to the rendered element
+tenary operator: 
+- if asChild is true, the Slot component is used to apply styles to a different HTML element (e.g. a link)
+- if asChild is false, a button element is used by default (the standard clickable button element)
+*/
+export function Button({
   className,
   variant,
   size,
@@ -46,6 +76,11 @@ function Button({
   }) {
 const Comp = (asChild ? Slot : "button") as React.ElementType;
 
+  /*
+  buttonVariants function is called to select the correct variant and size along with any extra className passed in
+  cn() combines the variant, size, and clasname into one clean string
+  props passes any extra attributes (like id, onClick, etc.) to the element
+  */
   return (
     <Comp
       data-slot="button"
@@ -54,5 +89,3 @@ const Comp = (asChild ? Slot : "button") as React.ElementType;
     />
   );
 }
-
-export { Button, buttonVariants };

@@ -1,8 +1,16 @@
+/*
+UI component that renders a styled input field for single-line text
+*/
 import * as React from "react";
-
 import { cn } from "./utils";
 
-function Input({ className, type, ...props }: React.ComponentProps<"input">) {
+/*
+defines the input component that wraps a standard HTML input element
+accepts className for custom styling and other props to be passed down to the input element and type to specify the input type (e.g. text, password, email)
+the input type is passed through and applies default styles for border, background colour, rounded corners, and shaoow
+accepts className prop for additional custom styling and other props to be passed down to the input element
+*/ 
+export function Input({ className, type, ...props }: React.ComponentProps<"input">) {
   return (
     <input
       type={type}
@@ -18,4 +26,3 @@ function Input({ className, type, ...props }: React.ComponentProps<"input">) {
   );
 }
 
-export { Input };
