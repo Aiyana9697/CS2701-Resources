@@ -14,7 +14,7 @@ import { cn } from "./utils";
 defines the main Accordion component that wraps the Radix AccordionPrimitive.Root component (which manages the accordion state and behaviour)
 passes down any recieved props and adds a data-slot attribute which can be used for styling 
 */
-function Accordion({
+export function Accordion({
   ...props
 }: React.ComponentProps<typeof AccordionPrimitive.Root>) {
   return <AccordionPrimitive.Root data-slot="accordion" {...props} />;
@@ -22,10 +22,10 @@ function Accordion({
 
 /*
 wraps the Radix AccordionPrimitive.Item component representing each item in the accordion
-passes down any recieved props and classname 
+passes down any recieved props and css class names to allow for custom styling
 adds a data-slot attribute for styling and applies default border to separate each item visually
 */
-function AccordionItem({
+export function AccordionItem({
   className,
   ...props}: 
   React.ComponentProps<typeof AccordionPrimitive.Item>) {
@@ -38,7 +38,12 @@ function AccordionItem({
   );
 }
 
-function AccordionTrigger({
+/*
+Wraps the Radix AccordionPrimitive.Trigger component which acts as the clickable header for each accordion item
+passes down any recieved props , css class names for custom styling and children elements to be displayed inside the trigger
+adds a ChevronDownIcon that rotates when the accordion item is expanded / collapsed
+*/
+export function AccordionTrigger({
   className,
   children,
   ...props
@@ -60,7 +65,12 @@ function AccordionTrigger({
   );
 }
 
-function AccordionContent({
+/*
+Wraps the Radix AccordionPrimitive.Content component which contains the hidden content revealed when the accordion item is expanded
+passes down any recieved props , css class names for custom styling and children elements to be displayed inside the content area
+adds a slide up / down animation when the content is expanded / collapsed
+*/
+export function AccordionContent({
   className,
   children,
   ...props
@@ -75,5 +85,3 @@ function AccordionContent({
     </AccordionPrimitive.Content>
   );
 }
-
-export { Accordion, AccordionItem, AccordionTrigger, AccordionContent };

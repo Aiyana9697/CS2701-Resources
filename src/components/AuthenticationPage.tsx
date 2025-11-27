@@ -21,6 +21,7 @@ import { FloatingParticles } from './ui/FloatingParticles';
 
 interface AuthPageProps {
   onBack?: () => void;
+  onLoginSuccess: () => void; 
 }
 
 /* 
@@ -32,7 +33,7 @@ Defines AuthPage compomnent which:
   - Stops the page from refreshing when the form is submitted 
   - Prints the form data to the console (placeholder for actual auth logic) 
 */
-export function AuthPage({ onBack }: AuthPageProps) {
+export function AuthPage({ onBack, onLoginSuccess }: AuthPageProps) {
   const [loginData, setLoginData] = useState({ email: '', password: '' });
   const [registerData, setRegisterData] = useState({
     name: '',
@@ -47,14 +48,65 @@ export function AuthPage({ onBack }: AuthPageProps) {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Login:', loginData);
+
     // Add login logic here
+    const email = loginData.email.trim();
+    const password = loginData.password.trim();
+
+    // email follows a proper format 
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      alert("Invalid Email Address. Please enter your email address again.");
+      return;
+    }
+
+   // check password is at least 8 characters long
+    if (password.length < 8) {
+      alert("Password must be at least 8 characters long.");
+      return;
+    }
+
+    // If we get here, login was successful
+    console.log("Login successful!");
+
+    onLoginSuccess();  // TRIGGER redirect to homepage
   };
 
   const handleRegister = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Register:', registerData);
+
     // Add registration logic here
-  };
+    const FullName = registerData.name.trim();
+    const email = registerData.email.trim();
+    const password = registerData.password.trim();
+    const confirmPassword = registerData.confirmPassword.trim();
+
+    if(!/^[A-Za-z']+(?:\s+[A-Za-z']+)+$/.test(FullName)){
+    alert("Invalid Full Name. Please enter your full name (first and last).");
+    return;
+    }
+
+    // email validation
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+        alert("Invalid Email Address. Please enter your email address again.");
+        return;
+    }
+    // password validation
+    if(password.length<8 ){
+        alert("Password must be at least 8 characters long.")
+        return;
+    }
+    // password confirmation
+    if(password!==confirmPassword){
+        alert("Passwords do not match. please re-enter your password.");
+        return;
+    }
+    // terms agreement
+    if(!agreedToTerms){
+    alert("Please agree to the terms and conditions before submitting.");
+    return;
+    }
+      };
 
 
 /*
@@ -80,6 +132,7 @@ Defines the main container for the page and ensures it:
 
       {onBack && (
         <motion.button
+
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           onClick={onBack}

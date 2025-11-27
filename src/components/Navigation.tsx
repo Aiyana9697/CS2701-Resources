@@ -100,7 +100,7 @@ export function Navigation({ onGetStarted }: NavigationProps) {
           <div className="flex items-center justify-between">
             {/* Logo */}
             <div className="flex items-center gap-2">
-              <div className="w-10 h-10 bg-cyan-500/70 rounded-lg flex items-center justify-center backdrop-blur-sm border border-cyan-400/30">
+              <div className="w-10 h-10 bg-cyan-500/20 rounded-lg flex items-center justify-center backdrop-blur-sm border border-cyan-400/20">
                 <Waves className="w-6 h-6 text-cyan-300" />
               </div>
               <span className="text-white">OceanIQ</span>
@@ -151,9 +151,9 @@ export function Navigation({ onGetStarted }: NavigationProps) {
                 className="text-white hover:text-cyan-400 hover:bg-cyan-500/10"
               >
                 {theme === 'dark' ? (
-                  <Sun className="w-5 h-5" />
+                  <Sun className="w-4 h-4" />
                 ) : (
-                  <Moon className="w-5 h-5" />
+                  <Moon className="w-4 h-4" />
                 )}
               </Button>
                
@@ -174,9 +174,9 @@ export function Navigation({ onGetStarted }: NavigationProps) {
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               >
                 {isMobileMenuOpen ? (
-                  <X className="w-6 h-6" />
+                  <X className="w-5 h-5" />
                 ) : (
-                  <Menu className="w-6 h-6" />
+                  <Menu className="w-4 h-4" />
                 )}
               </Button>
             </div>
