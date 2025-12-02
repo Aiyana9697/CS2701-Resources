@@ -49,18 +49,21 @@ const datasets = [
     type: 'CSV',
     size: '2.4 MB',
     downloads: 234,
+    compliance: "[ UK GDPR ✅ ]"
   },
   {
     name: 'Sediment Plume Analysis',
     type: 'JSON',
     size: '1.8 MB',
     downloads: 156,
+    compliance: "[ UK GDPR ✅ ]"
   },
   {
     name: 'Deep-Sea Species Database',
     type: 'Excel',
     size: '5.2 MB',
     downloads: 412,
+    compliance: "[ UK GDPR ❌ ]"
   },
 ];
 
@@ -214,7 +217,8 @@ export function ResearchHub() {
                   >
                     <Card className="bg-slate-900/50 border-slate-700 hover:border-cyan-500/50 transition-all p-4">
                       <div className="flex items-center justify-between">
-                        <div className="flex-1">
+                        {/*left side */}
+                        <div className="flex-1 flex flex-col">
                           <h4 className="text-white mb-1">{dataset.name}</h4>
                           <div className="flex items-center gap-3 text-sm text-slate-400">
                             <Badge variant="outline" className="bg-slate-700/50 text-slate-300">
@@ -224,9 +228,19 @@ export function ResearchHub() {
                             <span>• {dataset.downloads} downloads</span>
                           </div>
                         </div>
-                        <Button size="sm" variant="outline" className="border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/10">
-                          Download
-                        </Button>
+                        {/*right side */}
+                        <div className="flex flex-col items-center">
+
+                          <p className="mb-2 text-xs text-cyan-300">
+                            {dataset.compliance ?? "UK GDPR"}
+                          </p>
+
+                          <Button size="sm" variant="outline" className=" border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/10">
+                            Download
+                          </Button>
+
+                        </div >
+
                       </div>
                     </Card>
                   </motion.div>
@@ -267,11 +281,16 @@ export function ResearchHub() {
                             by <span className="text-cyan-400">{discussion.author}</span> • {discussion.role}
                           </p>
                         </div>
-                        <Badge className="bg-cyan-500/20 text-cyan-300 border-cyan-500/30">
-                          {discussion.replies} replies
-                        </Badge>
+                        <Button size="sm" variant="outline" className=" border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/10">
+                            {discussion.replies} replies
+                        </Button>
                       </div>
                       <p className="text-sm text-slate-500">{discussion.timestamp}</p>
+
+                      <Button size="default" variant="outline" className=" border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/10">
+                        Reply
+                      </Button>
+
                     </Card>
                   </motion.div>
                 ))}
