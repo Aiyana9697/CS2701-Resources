@@ -7,7 +7,6 @@ React component that renders the hero section which:
 - shows a downward pointing chevron icon at the bottom to indicate scrolllng
 */ 
 import { motion } from 'framer-motion';
-import { useState, useEffect } from 'react';
 import { Button } from './ui/button';
 import { Waves, ChevronDown } from 'lucide-react';
 import { FloatingParticles } from './ui/FloatingParticles';

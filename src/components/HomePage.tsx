@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from './ui/button';
-import { 
-  Waves, 
-  Home, 
-  Map, 
-  BookOpen, 
-  FlaskConical, 
-  TrendingUp, 
+import {
+  Waves,
+  Home,
+  Map,
+  BookOpen,
+  FlaskConical,
+  TrendingUp,
   User,
   Settings,
   LogOut,
@@ -58,7 +58,7 @@ export function HomePage({ onLogout }: HomePageProps) {
       {/* Vertical Sidebar Navigation */}
       <motion.aside
         initial={{ x: -100, opacity: 0 }}
-        animate={{ x: 0, opacity: 1, width: collapsed ? 80 : 256}}
+        animate={{ x: 0, opacity: 1, width: collapsed ? 80 : 256 }}
         transition={{ type: "spring", stiffness: 220, damping: 28 }}
         className="fixed left-0 top-0 h-screen w-64 bg-[#071821]/95 backdrop-blur-xl border-r border-cyan-500/20 shadow-2xl flex flex-col z-50"
       >
@@ -91,12 +91,12 @@ export function HomePage({ onLogout }: HomePageProps) {
           </button>
         </div>
 
-                {/* Navigation Links */}
+        {/* Navigation Links */}
         <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeNav === item.label;
-            
+
             return (
               <motion.button
                 key={item.label}
@@ -104,19 +104,18 @@ export function HomePage({ onLogout }: HomePageProps) {
                 whileHover={{ x: 4 }}
                 whileTap={{ scale: 0.98 }}
                 transition={{ ease: "linear", duration: 0 }}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
-                  isActive
-                    ? 'bg-gradient-to-r from-cyan-500/20 to-blue-500/20 text-cyan-300 border border-cyan-400/30 shadow-lg shadow-cyan-500/10'
-                    : 'text-slate-300 hover:bg-cyan-500/10 hover:text-cyan-400'
-                }`}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${isActive
+                  ? 'bg-gradient-to-r from-cyan-500/20 to-blue-500/20 text-cyan-300 border border-cyan-400/30 shadow-lg shadow-cyan-500/10'
+                  : 'text-slate-300 hover:bg-cyan-500/10 hover:text-cyan-400'
+                  }`}
               >
                 <Icon className="w-5 h-5" />
                 {!collapsed && <span className="text-sm">{item.label}</span>}
               </motion.button>
-              );
-            })}
-          </nav>
-            
+            );
+          })}
+        </nav>
+
 
         {/* Bottom Section */}
         <div className="p-4 border-t border-cyan-500/20 space-y-2">
@@ -169,8 +168,7 @@ export function HomePage({ onLogout }: HomePageProps) {
       </motion.aside>
 
       {/* Main Content Area */}
-      <div className={`flex-1 transition-all duration-300 ${
-        collapsed ? "ml-20" : "ml-64"} relative z-10`}
+      <div className={`flex-1 transition-all duration-300 ${collapsed ? "ml-20" : "ml-64"} relative z-10`}
       >
 
         {/* Top Bar */}
