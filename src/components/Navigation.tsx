@@ -52,6 +52,7 @@ export function Navigation({ onGetStarted }: NavigationProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // State 2 
   const { theme, toggleTheme } = useTheme(); // State 3
 
+  
   /* 
   creates a handleScroll function that runs every time the user scrolls 
   setIsScrolled checks how far the page has been scrolled vertically: 

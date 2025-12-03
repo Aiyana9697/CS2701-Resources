@@ -123,7 +123,6 @@ export function EducationalPortal() {
         - each card fades in and slides up when it appears once
         - depending on the index of the card, each card appears 0.1s after the previous one for a staggered effect
         */}
-
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {educationalTopics.map((topic, index) => {
             const Icon = topic.icon;
@@ -154,7 +153,7 @@ export function EducationalPortal() {
                       <Icon className="w-6 h-6 text-cyan-400" />
                     </div>
                   </div>
-                  
+
                   {/* 
                   defines a container for the card's content with padding and flex layout to ensure the 'Start Learning' button is at the bottom of the container 
                   topic title is displayed in white with margin below
@@ -165,7 +164,7 @@ export function EducationalPortal() {
                   <div className="p-6 flex-1 flex flex-col">
                     <h3 className="text-white mb-2">{topic.title}</h3>
                     <p className="text-slate-400 text-sm mb-4 flex-1">{topic.description}</p>
-                    
+
                     <div className="flex items-center justify-between mb-4">
                       <Badge variant="outline" className={getLevelColor(topic.level)}>
                         {topic.level}
@@ -173,8 +172,8 @@ export function EducationalPortal() {
                       <span className="text-slate-500 text-sm">{topic.duration}</span>
                     </div>
 
-                    <Button 
-                      variant="ghost" 
+                    <Button
+                      variant="ghost"
                       className="w-full justify-between text-cyan-400 hover:text-cyan-300 hover:bg-cyan-500/10"
                     >
                       Start Learning
@@ -191,7 +190,7 @@ export function EducationalPortal() {
         renders 'View All Resources' button at the bottom of the section 
         animation - fades in the button once when section appears 
         button is large sized with white text, cyan background and hover effects
-        */} 
+        */}
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
