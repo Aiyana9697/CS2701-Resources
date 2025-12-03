@@ -1,124 +1,211 @@
+import { useState } from 'react';
+import { motion } from 'framer-motion';
+import { Button } from './ui/button';
+import {
+  Waves,
+  Home,
+  Map,
+  BookOpen,
+  FlaskConical,
+  TrendingUp,
+  User,
+  Settings,
+  LogOut,
+  Sun,
+  Moon,
+  PanelLeftClose,
+  PanelLeftOpen
+} from 'lucide-react';
+import { useTheme } from './ThemeProvider';
+import { FloatingParticles } from './ui/FloatingParticles';
+// import { InteractiveMapSection } from './dashboard/InteractiveMapSection';
+// import { EducationalSection } from './dashboard/EducationalSection';
+// import { LearningModulesSection } from './dashboard/LearningModulesSection';
+// import { ImpactAnalysisSection } from './dashboard/ImpactAnalysisSection';
+// import { ResearchPlatformSection } from './dashboard/ResearchPlatformSection';
+// import { MyStatsSection } from './dashboard/MyStatsSection';
+// import { SavedItemsSection } from './dashboard/SavedItemsSection';
 
-export function HomePage() {
+interface HomePageProps {
+  onLogout?: () => void;
+}
+
+const navItems = [
+  { label: 'Dashboard', icon: Home, href: '#dashboard' },
+  { label: 'Map', icon: Map, href: '#map' },
+  { label: 'Learn', icon: BookOpen, href: '#learn' },
+  { label: 'Research', icon: FlaskConical, href: '#research' },
+  { label: 'Impact', icon: TrendingUp, href: '#impact' },
+];
+
+export function HomePage({ onLogout }: HomePageProps) {
+  const [activeNav, setActiveNav] = useState('Dashboard');
+  const [collapsed, setCollapsed] = useState(false);
+  const { theme, toggleTheme } = useTheme();
+
+  const handleNavClick = (label: string, href: string) => {
+    setActiveNav(label);
+    const element = document.querySelector(href);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#071821] via-[#0a2332] to-[#071821] relative overflow-hidden">
-      {/* floating particles */}
-      <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-cyan-500/5 rounded-full blur-3xl animate-pulse"></div>
+    <div className="min-h-screen bg-gradient-to-b from-[#071821] via-slate-950 to-[#071821] flex relative overflow-hidden">
+      <FloatingParticles />
 
-        <div
-          className="absolute top-1/2 right-1/4 w-96 h-96 bg-teal-500/5 rounded-full blur-3xl animate-pulse"
-          style={{ animationDelay: "1s" }}
-        ></div>
+      {/* Vertical Sidebar Navigation */}
+      <motion.aside
+        initial={{ x: -100, opacity: 0 }}
+        animate={{ x: 0, opacity: 1, width: collapsed ? 80 : 256 }}
+        transition={{ type: "spring", stiffness: 220, damping: 28 }}
+        className="fixed left-0 top-0 h-screen w-64 bg-[#071821]/95 backdrop-blur-xl border-r border-cyan-500/20 shadow-2xl flex flex-col z-50"
+      >
+        {/* Logo + Collapse Button Row */}
+        <div className="p-4.5 border-b border-cyan-500/20 flex items-center justify-between">
 
-        <div
-          className="absolute bottom-1/4 left-1/2 w-80 h-80 bg-cyan-500/5 rounded-full blur-3xl animate-pulse"
-          style={{ animationDelay: "2s" }}
-        ></div>
-      </div>
+          {/* Logo Section */}
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-gradient-to-br from-cyan-500/20 to-blue-500/20 rounded-xl flex items-center justify-center backdrop-blur-sm border border-cyan-400/30 shadow-lg shadow-cyan-500/20">
+              <Waves className="w-6 h-6 text-cyan-400" />
+            </div>
 
-      {/* particle texture */}
-      <div className="fixed inset-0 opacity-20 pointer-events-none">
-        <div
-          className="w-full h-full"
-          style={{
-            backgroundImage:
-              "radial-gradient(circle, rgba(6, 182, 212, 0.1) 1px, transparent 1px)",
-            backgroundSize: "50px 50px",
-          }}
-        ></div>
-      </div>
+            {!collapsed && (
+              <span className={theme === "dark" ? "text-white" : "text-slate-800"}>
+                OceanIQ
+              </span>
+            )}
+          </div>
 
-      <div className="relative z-10">
-        {/* navigation */}
-        <nav className="w-full py-6 px-6 bg-black/20 backdrop-blur-md border-b border-cyan-500/20">
-          <h2 className="text-center text-cyan-400 text-xl font-semibold">
-            Navigation menu
-          </h2>
+          {/* Collapse Button */}
+          <button
+            onClick={() => setCollapsed(!collapsed)}
+            className="p-2 hover:bg-cyan-500/10 rounded-md transition"
+          >
+            {collapsed ? (
+              <PanelLeftOpen className="w-5 h-5 text-cyan-400" />
+            ) : (
+              <PanelLeftClose className="w-5 h-5 text-cyan-400" />
+            )}
+          </button>
+        </div>
+
+        {/* Navigation Links */}
+        <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = activeNav === item.label;
+
+            return (
+              <motion.button
+                key={item.label}
+                onClick={() => handleNavClick(item.label, item.href)}
+                whileHover={{ x: 4 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ ease: "linear", duration: 0 }}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${isActive
+                  ? 'bg-gradient-to-r from-cyan-500/20 to-blue-500/20 text-cyan-300 border border-cyan-400/30 shadow-lg shadow-cyan-500/10'
+                  : 'text-slate-300 hover:bg-cyan-500/10 hover:text-cyan-400'
+                  }`}
+              >
+                <Icon className="w-5 h-5" />
+                {!collapsed && <span className="text-sm">{item.label}</span>}
+              </motion.button>
+            );
+          })}
         </nav>
 
-        {/* Hero Section */}
-        <section className="container mx-auto px-6 py-24 text-center">
-          <h1 className="text-4xl font-bold text-cyan-300 mb-4">
-            Hero Section
-          </h1>
-          <p className="text-gray-300">
-            This is where the main headline and welcome message go.
-          </p>
-        </section>
 
-        {/* Map Preview */}
-        <section className="container mx-auto px-6 py-12">
-          <h2 className="text-2xl font-semibold text-cyan-300 mb-4">
-            Map Preview
-          </h2>
-          <div className="w-full h-64 bg-black/30 rounded-xl border border-cyan-500/20"></div>
-        </section>
+        {/* Bottom Section */}
+        <div className="p-4 border-t border-cyan-500/20 space-y-2">
+          {/* Theme Toggle */}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={toggleTheme}
+            className="w-full justify-start gap-3 text-slate-300 hover:text-cyan-400 hover:bg-cyan-500/10 rounded-xl"
+          >
+            {theme === 'dark' ? (
+              <Sun className="w-5 h-5" />
+            ) : (
+              <Moon className="w-5 h-5" />
+            )}
+            {!collapsed && <span className="text-sm">Toggle Theme</span>}
+          </Button>
 
-        {/* My Stats */}
-        <section className="container mx-auto px-6 py-12">
-          <h2 className="text-2xl text-cyan-300 font-semibold mb-4">
-            My Stats
-          </h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="p-6 bg-black/30 rounded-xl border border-cyan-500/20">
-              Stat 1
+          {/* Settings */}
+          <Button
+            variant="ghost"
+            size="sm"
+            className="w-full justify-start gap-3 text-slate-300 hover:text-cyan-400 hover:bg-cyan-500/10 rounded-xl"
+          >
+            <Settings className="w-5 h-5" />
+            {!collapsed && <span className="text-sm">Settings</span>}
+          </Button>
+
+          {/* User Profile */}
+          <Button
+            variant="ghost"
+            size="sm"
+            className="w-full justify-start gap-3 text-slate-300 hover:text-cyan-400 hover:bg-cyan-500/10 rounded-xl"
+          >
+            <User className="w-5 h-5" />
+            {!collapsed && <span className="text-sm">Profile</span>}
+          </Button>
+
+          {/* Logout */}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onLogout}
+            className="w-full justify-start gap-3 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-xl"
+          >
+            <LogOut className="w-5 h-5" />
+            {!collapsed && <span className="text-sm">Logout</span>}
+          </Button>
+        </div>
+      </motion.aside>
+
+      {/* Main Content Area */}
+      <div className={`flex-1 transition-all duration-300 ${collapsed ? "ml-20" : "ml-64"} relative z-10`}
+      >
+
+        {/* Top Bar */}
+        <motion.div
+          initial={{ y: -20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          className="sticky top-0 z-40 bg-[#071821]/95 backdrop-blur-xl border-b border-cyan-500/20 px-8 py-4 shadow-lg"
+        >
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-white">Welcome Back!</h1>
+              <p className="text-slate-400 text-sm">Explore ocean conservation insights and data</p>
             </div>
-            <div className="p-6 bg-black/30 rounded-xl border border-cyan-500/20">
-              Stat 2
-            </div>
-            <div className="p-6 bg-black/30 rounded-xl border border-cyan-500/20">
-              Stat 3
-            </div>
-            <div className="p-6 bg-black/30 rounded-xl border border-cyan-500/20">
-              Stat 4
+            <div className="flex items-center gap-4">
+              <div className="text-right">
+                <p className="text-sm text-white">Ocean Explorer</p>
+                <p className="text-xs text-slate-400">explorer@oceansdg.org</p>
+              </div>
+              <div className="w-10 h-10 bg-gradient-to-br from-cyan-500/20 to-blue-500/20 rounded-full flex items-center justify-center border border-cyan-400/30 shadow-lg shadow-cyan-500/20">
+                <User className="w-5 h-5 text-cyan-400" />
+              </div>
             </div>
           </div>
-        </section>
+        </motion.div>
 
-        {/* Impact Metrics */}
-        <section className="container mx-auto px-6 py-12">
-          <h2 className="text-2xl text-cyan-300 font-semibold mb-4">
-            Impact Metrics
-          </h2>
-          <div className="w-full h-40 bg-black/30 rounded-xl border border-cyan-500/20"></div>
-        </section>
-
-        {/* Saved Items */}
-        <section className="container mx-auto px-6 py-12">
-          <h2 className="text-2xl text-cyan-300 font-semibold mb-4">
-            Saved Items
-          </h2>
-          <div className="w-full h-40 bg-black/30 rounded-xl border border-cyan-500/20"></div>
-        </section>
-
-        {/* Learning Modules */}
-        <section className="container mx-auto px-6 py-12">
-          <h2 className="text-2xl text-cyan-300 font-semibold mb-4">
-            Saved Items
-          </h2>
-          <div className="w-full h-40 bg-black/30 rounded-xl border border-cyan-500/20"></div>
-        </section>
-
-        {/* Education Portal */}
-        <section className="container mx-auto px-6 py-12">
-          <h2 className="text-2xl text-cyan-300 font-semibold mb-4">
-            Saved Items
-          </h2>
-          <div className="w-full h-40 bg-black/30 rounded-xl border border-cyan-500/20"></div>
-        </section>
-
-        {/* Footer */}
-        <footer className="container mx-auto px-6 py-12 mt-16 border-t border-cyan-500/20">
-          <div className="text-center text-gray-500">
-            <p className="mb-2">
-              OceanIQ - Exploring the depths, preserving the future
-            </p>
-            <p className="text-sm">
-              © 2025 OceanIQ. Marine conservation through education.
-            </p>
+        {/* Page Content with all sections */}
+        <div className="relative">
+          <div className="space-y-0">
+            {/* <MyStatsSection />
+            <InteractiveMapSection />
+            <EducationalSection />
+            <LearningModulesSection />
+            <ImpactAnalysisSection />
+            <ResearchPlatformSection />
+            <SavedItemsSection /> */}
           </div>
-        </footer>
+        </div>
       </div>
     </div>
   );
