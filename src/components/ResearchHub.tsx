@@ -110,6 +110,10 @@ export function ResearchHub() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const [openCommentBoxId, setOpenCommentBoxId] = useState<number | null>(null);
+  const [openRepliesId, setOpenRepliesId] = useState<number | null>(null);
+  const [replyText, setReplyText] = useState(''); 
+
+  
 
   const [discussions, setDiscussions] = useState(initialDiscussions);
 
@@ -167,8 +171,29 @@ export function ResearchHub() {
     );
     };
 
-  // stores which checkbox options were selected
-  const [selected, setSelected] = useState<string[]>([]);
+
+    const [selected, setSelected] = useState<string[]>([]);
+
+    const handlePostReply = (discussionId: number) => {
+    if (!replyText.trim()) return;
+
+    setDiscussions(prev =>
+      prev.map(d =>
+        d.id === discussionId
+          ? {
+              ...d,
+              replies: d.replies + 1,
+              comments: [...(d.comments || []), replyText.trim()],
+            }
+          : d
+      )
+    );
+
+    setReplyText('');
+    setOpenCommentBoxId(null);
+    setOpenRepliesId(discussionId);
+  };
+  
 
   // handles checking and unchecking options in the popup
   const toggleOption = (value: string) => {
@@ -436,24 +461,62 @@ export function ResearchHub() {
                           </Button>
                           
                           {openCommentBoxId === discussion.id && (
-                          <textarea
-                            className="mt-2 w-full p-2 rounded bg-slate-800 border border-slate-600 text-white text-sm"
-                            placeholder="Write your comment..."
-                          />
+                            <div className="mt-2 w-full">
+                              <textarea
+                                className="w-full p-2 rounded bg-slate-800 border border-slate-600 text-white text-sm"
+                                placeholder="Write your comment..."
+                                value={replyText}
+                                onChange={e => setReplyText(e.target.value)}
+                              />
+                              <Button
+                                size="sm"
+                                className="mt-2 bg-cyan-500 hover:bg-cyan-600 text-white"
+                                onClick={() => handlePostReply(discussion.id)}
+                              >
+                                Post
+                              </Button>
+                            </div>
                           )}
+
 
 
                         </div>
 
-                      
+                        <Button
+                          size="default"
+                          variant="outline"
+                          className="border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/10 "
+                          onClick={() =>
+                            setOpenRepliesId(
+                              openRepliesId === discussion.id ? null : discussion.id
+                            )
+                          }
+                        >
+                          {discussion.comments.length} replies
+                        </Button>
 
-                          <Button
-                              size="sm"
-                              variant="outline"
-                              className="border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/10"
-                            >
-                              {discussion.replies} replies
-                          </Button>
+                        {openRepliesId === discussion.id && discussion.comments && (
+                        <div className="mt-3 ml-4 space-y-3">
+                          {discussion.comments.map((comment, i) => (
+                            <div key={i} className="flex gap-2">
+
+                              {/* bullet */}
+                              <div className="mt-2 h-2 w-2 rounded-full bg-cyan-500/70" />
+
+                              {/* reply bubble */}
+                              <div className="flex-1 bg-slate-900/70 border border-slate-700/70 rounded-lg px-3 py-2">
+                                <p className="text-sm text-slate-200 leading-relaxed">
+                                  {comment}
+                                </p>
+                              </div>
+
+                            </div>
+                          ))}
+                        </div>
+                        )}
+
+
+
 
                     </Card>
                   </motion.div>
