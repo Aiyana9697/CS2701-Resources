@@ -78,6 +78,10 @@ export function ResearchHub() {
   // search bar state
   const [searchQuery, setSearchQuery] = useState('');
 
+  const [filterByDownloads, setFilterByDownloads] = useState(false);
+  // const [filterByNew, setFilterByNew] = useState(false);
+  const [TempFilterByDownloads, setTempFilterByDownloads] = useState(false);
+
   // controls whether the checkbox popup window is open or closed
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
@@ -186,7 +190,10 @@ export function ResearchHub() {
                 {/* open the popup when clicking Filter */}
                 <Button
                   className="bg-cyan-500 hover:bg-cyan-600 text-white"
-                  onClick={() => setIsFilterOpen(true)}
+                  onClick={() => {
+                    setTempFilterByDownloads(filterByDownloads);
+                    setIsFilterOpen(true);
+                  }}
                 >
                   Filter
                 </Button>
@@ -208,7 +215,10 @@ export function ResearchHub() {
               - download button is styled with a cyan border, cyan text and dark background that lightens slightly on hover
               */}
               <div className="space-y-4">
-                {datasets.map((dataset, index) => (
+                {(filterByDownloads
+                ? datasets.sort((a, b) => b.downloads - a.downloads)   // sort only when ON
+                : datasets  
+                ).map((dataset, index) => (
                   <motion.div
                     key={index}
                     initial={{ opacity: 0, x: -20 }}
@@ -366,9 +376,9 @@ export function ResearchHub() {
           {/* Checkbox list */}
           <div className="space-y-2 mb-4">
 
-            {/* Loop through your checkbox items */}
-            {["By Downloads (most popular)", "new",].map((opt) => (
-              <label key={opt} className="flex items-center gap-2 text-slate-300">
+            Loop through your checkbox items
+            <div>
+              <label className="flex items-center gap-2 text-slate-300">
 
                 {/* 
                   Checkbox input. 
@@ -376,15 +386,33 @@ export function ResearchHub() {
                 */}
                 <input
                   type="checkbox"
-                  checked={selected.includes(opt)}
-                  onChange={() => toggleOption(opt)}   // call toggle when clicked
+                  checked={filterByDownloads}      
+                  onChange={(e) => setFilterByDownloads(e.target.checked)}   // call toggle when clicked
                   className="h-4 w-4"
                 />
 
                 {/* Name of the checkbox option */}
-                {opt}
+                By Downloads (most popular)
               </label>
-            ))}
+            </div>
+            <div>
+              <label className="flex items-center gap-2 text-slate-300">
+
+                {/* 
+                  Checkbox input. 
+                  "checked" shows whether this option is in the selected array.
+                */}
+                <input
+                  type="checkbox"
+                  checked ={TempFilterByDownloads} 
+                  onChange={(e) => setTempFilterByDownloads(e.target.checked)}   // call toggle when clicked
+                  className="h-4 w-4"
+                />
+
+                {/* Name of the checkbox option */}
+                new
+              </label>
+            </div>
           </div>
 
             {/* Buttons at the bottom of the popup */}
@@ -402,7 +430,10 @@ export function ResearchHub() {
               {/* Apply selections + close popup (you can add filtering logic later) */}
               <Button
                 className="bg-cyan-500 hover:bg-cyan-600 text-white"
-                onClick={() => setIsFilterOpen(false)}
+                onClick={() => {
+                setFilterByDownloads(TempFilterByDownloads);
+                setIsFilterOpen(false);
+                }}
               >
                 Apply
               </Button>
