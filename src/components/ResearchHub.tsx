@@ -49,18 +49,21 @@ const datasets = [
     type: 'CSV',
     size: '2.4 MB',
     downloads: 234,
+    compliance: "[ UK GDPR ✅ ]"
   },
   {
     name: 'Sediment Plume Analysis',
     type: 'JSON',
     size: '1.8 MB',
     downloads: 156,
+    compliance: "[ UK GDPR ✅ ]"
   },
   {
     name: 'Deep-Sea Species Database',
     type: 'Excel',
     size: '5.2 MB',
     downloads: 412,
+    compliance: "[ UK GDPR ❌ ]"
   },
 ];
 
@@ -74,6 +77,10 @@ defines a local state where:
 export function ResearchHub() {
   // search bar state
   const [searchQuery, setSearchQuery] = useState('');
+
+  const [filterByDownloads, setFilterByDownloads] = useState(false);
+  // const [filterByNew, setFilterByNew] = useState(false);
+  const [TempFilterByDownloads, setTempFilterByDownloads] = useState(false);
 
   // controls whether the checkbox popup window is open or closed
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -183,7 +190,10 @@ export function ResearchHub() {
                 {/* open the popup when clicking Filter */}
                 <Button
                   className="bg-cyan-500 hover:bg-cyan-600 text-white"
-                  onClick={() => setIsFilterOpen(true)}
+                  onClick={() => {
+                    setTempFilterByDownloads(filterByDownloads);
+                    setIsFilterOpen(true);
+                  }}
                 >
                   Filter
                 </Button>
@@ -205,7 +215,10 @@ export function ResearchHub() {
               - download button is styled with a cyan border, cyan text and dark background that lightens slightly on hover
               */}
               <div className="space-y-4">
-                {datasets.map((dataset, index) => (
+                {(filterByDownloads
+                ? datasets.sort((a, b) => b.downloads - a.downloads)   // sort only when ON
+                : datasets  
+                ).map((dataset, index) => (
                   <motion.div
                     key={index}
                     initial={{ opacity: 0, x: -20 }}
@@ -214,7 +227,8 @@ export function ResearchHub() {
                   >
                     <Card className="bg-slate-900/50 border-slate-700 hover:border-cyan-500/50 transition-all p-4">
                       <div className="flex items-center justify-between">
-                        <div className="flex-1">
+                        {/*left side */}
+                        <div className="flex-1 flex flex-col">
                           <h4 className="text-white mb-1">{dataset.name}</h4>
                           <div className="flex items-center gap-3 text-sm text-slate-400">
                             <Badge variant="outline" className="bg-slate-700/50 text-slate-300">
@@ -224,9 +238,19 @@ export function ResearchHub() {
                             <span>• {dataset.downloads} downloads</span>
                           </div>
                         </div>
-                        <Button size="sm" variant="outline" className="border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/10">
-                          Download
-                        </Button>
+                        {/*right side */}
+                        <div className="flex flex-col items-center">
+
+                          <p className="mb-2 text-xs text-cyan-300">
+                            {dataset.compliance ?? "UK GDPR"}
+                          </p>
+
+                          <Button size="sm" variant="outline" className=" border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/10">
+                            Download
+                          </Button>
+
+                        </div >
+
                       </div>
                     </Card>
                   </motion.div>
@@ -267,11 +291,16 @@ export function ResearchHub() {
                             by <span className="text-cyan-400">{discussion.author}</span> • {discussion.role}
                           </p>
                         </div>
-                        <Badge className="bg-cyan-500/20 text-cyan-300 border-cyan-500/30">
-                          {discussion.replies} replies
-                        </Badge>
+                        <Button size="sm" variant="outline" className=" border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/10">
+                            {discussion.replies} replies
+                        </Button>
                       </div>
                       <p className="text-sm text-slate-500">{discussion.timestamp}</p>
+
+                      <Button size="default" variant="outline" className=" border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/10">
+                        Reply
+                      </Button>
+
                     </Card>
                   </motion.div>
                 ))}
@@ -347,9 +376,9 @@ export function ResearchHub() {
           {/* Checkbox list */}
           <div className="space-y-2 mb-4">
 
-            {/* Loop through your checkbox items */}
-            {["By Downloads (most popular)", "new",].map((opt) => (
-              <label key={opt} className="flex items-center gap-2 text-slate-300">
+            Loop through your checkbox items
+            <div>
+              <label className="flex items-center gap-2 text-slate-300">
 
                 {/* 
                   Checkbox input. 
@@ -357,15 +386,33 @@ export function ResearchHub() {
                 */}
                 <input
                   type="checkbox"
-                  checked={selected.includes(opt)}
-                  onChange={() => toggleOption(opt)}   // call toggle when clicked
+                  checked={filterByDownloads}      
+                  onChange={(e) => setFilterByDownloads(e.target.checked)}   // call toggle when clicked
                   className="h-4 w-4"
                 />
 
                 {/* Name of the checkbox option */}
-                {opt}
+                By Downloads (most popular)
               </label>
-            ))}
+            </div>
+            <div>
+              <label className="flex items-center gap-2 text-slate-300">
+
+                {/* 
+                  Checkbox input. 
+                  "checked" shows whether this option is in the selected array.
+                */}
+                <input
+                  type="checkbox"
+                  checked ={TempFilterByDownloads} 
+                  onChange={(e) => setTempFilterByDownloads(e.target.checked)}   // call toggle when clicked
+                  className="h-4 w-4"
+                />
+
+                {/* Name of the checkbox option */}
+                new
+              </label>
+            </div>
           </div>
 
             {/* Buttons at the bottom of the popup */}
@@ -383,7 +430,10 @@ export function ResearchHub() {
               {/* Apply selections + close popup (you can add filtering logic later) */}
               <Button
                 className="bg-cyan-500 hover:bg-cyan-600 text-white"
-                onClick={() => setIsFilterOpen(false)}
+                onClick={() => {
+                setFilterByDownloads(TempFilterByDownloads);
+                setIsFilterOpen(false);
+                }}
               >
                 Apply
               </Button>
