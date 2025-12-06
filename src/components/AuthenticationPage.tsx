@@ -24,7 +24,7 @@ defines the structure of the props the AuthPage component can recieve
 */
 interface AuthPageProps {
   onBack?: () => void;
-  onLogin: () => void;
+  onLogin: (userRole: 'admin' | 'user') => void;
 }
 
 /* 
@@ -62,6 +62,7 @@ export function AuthPage({ onBack, onLogin }: AuthPageProps) {
     // login logic 
     const email = loginData.email.trim();
     const password = loginData.password.trim();
+    const isAdmin = loginData.email.toLowerCase() === 'admin@oceaniq.com';
 
     // email follows a proper format 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -76,7 +77,7 @@ export function AuthPage({ onBack, onLogin }: AuthPageProps) {
     // If we get here, login was successful
     // onLogin() trigger redirects user to 
     console.log("Login successful!");
-    onLogin?.();  
+    onLogin?.(isAdmin ? 'admin' : 'user');  
   };
 
 

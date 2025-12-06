@@ -9,19 +9,23 @@ import { ImpactTracker } from './components/ImpactTracker';
 import { Footer } from './components/Footer';
 import { AuthPage } from './components/AuthenticationPage';
 import { HomePage } from './components/HomePage';
+import { AdminDashboard } from './components/AdminDashboard';
 
 export default function App() {
   const [currentView, setCurrentView] = useState<'home' | 'auth' | 'dashboard'>('home');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userRole, setUserRole] = useState<'admin' | 'user'>('user');
 
-  const handleLogin = () => {
+  const handleLogin = (role: 'admin' | 'user') => {
     setIsAuthenticated(true);
     setCurrentView('dashboard');
+    setUserRole(role);
   };
 
   const handleLogout = () => {
     setIsAuthenticated(false);
     setCurrentView('home');
+    setUserRole('user');
   };
 
   return (
@@ -33,7 +37,11 @@ export default function App() {
             onLogin={handleLogin}
           />
         ) : currentView === 'dashboard' && isAuthenticated ? (
-          <HomePage onLogout={handleLogout} />
+          userRole === 'admin' ? (
+            <AdminDashboard onLogout={handleLogout} />
+          ) : (
+            <HomePage onLogout={handleLogout} />
+          )
         ) : (
           <>
             <Navigation onGetStarted={() => setCurrentView('auth')} />
