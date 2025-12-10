@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from './ui/button';
+import ImpactAnalysis  from './ImpactAnalysis';
 import {
   Waves,
   Home,
@@ -21,7 +22,7 @@ import { FloatingParticles } from './ui/FloatingParticles';
 // import { InteractiveMapSection } from './dashboard/InteractiveMapSection';
 // import { EducationalSection } from './dashboard/EducationalSection';
 // import { LearningModulesSection } from './dashboard/LearningModulesSection';
-// import { ImpactAnalysisSection } from './dashboard/ImpactAnalysisSection';
+// import { ImpactAnalysis } from './dashboard/ImpactAnalysis';
 // import { ResearchPlatformSection } from './dashboard/ResearchPlatformSection';
 // import { MyStatsSection } from './dashboard/MyStatsSection';
 // import { SavedItemsSection } from './dashboard/SavedItemsSection';
@@ -67,7 +68,8 @@ export function HomePage({ onLogout }: HomePageProps) {
 
           {/* Logo Section */}
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-cyan-500/20 to-blue-500/20 rounded-xl flex items-center justify-center backdrop-blur-sm border border-cyan-400/30 shadow-lg shadow-cyan-500/20">
+            <div className="w-10 h-10 bg-gradient-to-br from-cyan-500/20 to-blue-500/20 rounded-xl
+              flex items-center justify-center backdrop-blur-sm border border-cyan-400/30 shadow-lg shadow-cyan-500/20">
               <Waves className="w-6 h-6 text-cyan-400" />
             </div>
 
@@ -204,6 +206,14 @@ export function HomePage({ onLogout }: HomePageProps) {
             <ImpactAnalysisSection />
             <ResearchPlatformSection />
             <SavedItemsSection /> */}
+            <section id = "impact" className = "pt-24 px-8">
+              <h2 className = "text-2xl font-bold text-cyan-300 mb-4">
+                Environmental Impact Metrics 
+              </h2>
+              <div className  = "bg-[#0a1f29]/70 border border-cyan-500/20 rounded-xl p-6 shadow-xl backdrop-blur-md">
+              <ImpactAnalysis />
+              </div>
+            </section>
           </div>
         </div>
       </div>
