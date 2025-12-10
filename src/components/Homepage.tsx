@@ -22,7 +22,7 @@ import { FloatingParticles } from './ui/FloatingParticles';
 // import { InteractiveMapSection } from './dashboard/InteractiveMapSection';
 // import { EducationalSection } from './dashboard/EducationalSection';
 // import { LearningModulesSection } from './dashboard/LearningModulesSection';
-// import { ImpactAnalysis } from './dashboard/ImpactAnalysis';
+// import { ImpactAnalysisSection } from './dashboard/ImpactAnalysisSection';
 // import { ResearchPlatformSection } from './dashboard/ResearchPlatformSection';
 // import { MyStatsSection } from './dashboard/MyStatsSection';
 // import { SavedItemsSection } from './dashboard/SavedItemsSection';
@@ -30,7 +30,7 @@ import { FloatingParticles } from './ui/FloatingParticles';
 interface HomePageProps {
   onLogout?: () => void;
 }
-
+/* navigation sidebars */
 const navItems = [
   { label: 'Dashboard', icon: Home, href: '#dashboard' },
   { label: 'Map', icon: Map, href: '#map' },
@@ -44,6 +44,7 @@ export function HomePage({ onLogout }: HomePageProps) {
   const [collapsed, setCollapsed] = useState(false);
   const { theme, toggleTheme } = useTheme();
 
+/* handles clicks by navigating to that section */
   const handleNavClick = (label: string, href: string) => {
     setActiveNav(label);
     const element = document.querySelector(href);
@@ -54,8 +55,8 @@ export function HomePage({ onLogout }: HomePageProps) {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#071821] via-slate-950 to-[#071821] flex relative overflow-hidden">
-      <FloatingParticles />
-
+      <FloatingParticles />  /* background floating particles */
+ 
       {/* Vertical Sidebar Navigation */}
       <motion.aside
         initial={{ x: -100, opacity: 0 }}
@@ -70,9 +71,10 @@ export function HomePage({ onLogout }: HomePageProps) {
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-gradient-to-br from-cyan-500/20 to-blue-500/20 rounded-xl
               flex items-center justify-center backdrop-blur-sm border border-cyan-400/30 shadow-lg shadow-cyan-500/20">
-              <Waves className="w-6 h-6 text-cyan-400" />
+              <Waves className="w-6 h-6 text-cyan-400" /> /* logo icon */
             </div>
 
+            /* Show text logo only when sidebar is expanded */
             {!collapsed && (
               <span className={theme === "dark" ? "text-white" : "text-slate-800"}>
                 OceanIQ
@@ -82,13 +84,13 @@ export function HomePage({ onLogout }: HomePageProps) {
 
           {/* Collapse Button */}
           <button
-            onClick={() => setCollapsed(!collapsed)}
+            onClick={() => setCollapsed(!collapsed)}  /* toggle sidebar collapse */
             className="p-2 hover:bg-cyan-500/10 rounded-md transition"
           >
             {collapsed ? (
-              <PanelLeftOpen className="w-5 h-5 text-cyan-400" />
+              <PanelLeftOpen className="w-5 h-5 text-cyan-400" />  /* icon when collapsed */
             ) : (
-              <PanelLeftClose className="w-5 h-5 text-cyan-400" />
+              <PanelLeftClose className="w-5 h-5 text-cyan-400" /> /* icon when expanded*/
             )}
           </button>
         </div>
@@ -206,6 +208,8 @@ export function HomePage({ onLogout }: HomePageProps) {
             <ImpactAnalysisSection />
             <ResearchPlatformSection />
             <SavedItemsSection /> */}
+
+            /* content for impact Metrics*/
             <section id = "impact" className = "pt-24 px-8">
               <h2 className = "text-2xl font-bold text-cyan-300 mb-4">
                 Environmental Impact Metrics 
