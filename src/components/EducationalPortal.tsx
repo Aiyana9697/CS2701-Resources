@@ -14,10 +14,10 @@ import { Card } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { Microscope, Fish, Leaf, Waves, ChevronRight, GraduationCap } from 'lucide-react';
-import MarineSpeciesImage from '../assets/Marine Species Protection.jpeg';
-import SedimentPlumesImage from '../assets/Sediment Plumes.jpeg';
-import ProtectedAreasImage from '../assets/APEIs & Protected Areas.jpeg';
-import SustainabilityImage from '../assets/Sustainability Framework.jpeg';
+import MarineSpeciesImage from '../assets/MarineSpeciesProtection.jpeg';
+import SedimentPlumesImage from '../assets/SedimentPlumes.jpeg';
+import ProtectedAreasImage from '../assets/APEIs&ProtectedAreas.jpeg';
+import SustainabilityImage from '../assets/SustainabilityFramework.jpeg';
 import { ImageWithFallback } from './ImageWithFallback';
 
 /* 

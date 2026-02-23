@@ -386,7 +386,6 @@ export function ResearchHub() {
                             <p className="text-sm text-slate-400">
                               by <span className="text-cyan-400">{discussion.author}</span> • {discussion.role}
                             </p>
-
                           </div>
                         </div>
 
@@ -594,7 +593,7 @@ export function ResearchHub() {
           </div>
         </div>
       )}
-
+ 
 
     </section>
   );

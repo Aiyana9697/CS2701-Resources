@@ -191,7 +191,6 @@ export function InteractiveMap() {
               
               {/* 
               initalises a conditional rending depending on if a region is or is not selected
-
               When a region is selected: 
               - the region info is faded in 
               - the region name is displayed in a cyan colour 

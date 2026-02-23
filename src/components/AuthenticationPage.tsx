@@ -383,7 +383,6 @@ export function AuthPage({ onBack, onLogin }: AuthPageProps) {
                     </form>
                   </TabsContent>
 
-                  
                   {/* 
                   Defines the Login form content that appears when the 'Login' tab is selected
                   Creates a HTML form where when the user presses Register the handleRegister function is run

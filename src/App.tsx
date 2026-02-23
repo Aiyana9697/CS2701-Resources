@@ -8,8 +8,9 @@ import { ResearchHub } from './components/ResearchHub';
 import { ImpactTracker } from './components/ImpactTracker';
 import { Footer } from './components/Footer';
 import { AuthPage } from './components/AuthenticationPage';
-import { HomePage } from './components/HomePage';
-import { AdminDashboard } from './components/AdminDashboard';
+import { HomePage } from './components/home/HomePage';
+import { AdminDashboard } from './components/admin/AdminDashboard';
+import { UserDashboard } from './components/home/UserDashboard';
 
 export default function App() {
   const [currentView, setCurrentView] = useState<'home' | 'auth' | 'dashboard'>('home');
@@ -18,14 +19,14 @@ export default function App() {
 
   const handleLogin = (role: 'admin' | 'user') => {
     setIsAuthenticated(true);
-    setCurrentView('dashboard');
     setUserRole(role);
+    setCurrentView('dashboard');
   };
 
   const handleLogout = () => {
     setIsAuthenticated(false);
-    setCurrentView('home');
     setUserRole('user');
+    setCurrentView('home');
   };
 
   return (
@@ -40,7 +41,7 @@ export default function App() {
           userRole === 'admin' ? (
             <AdminDashboard onLogout={handleLogout} />
           ) : (
-            <HomePage onLogout={handleLogout} />
+            <UserDashboard onLogout={handleLogout} />
           )
         ) : (
           <>
