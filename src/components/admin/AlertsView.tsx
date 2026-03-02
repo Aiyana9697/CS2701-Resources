@@ -6,6 +6,7 @@ each alert is styled based on its severity level (high, medium, low) using diffe
 import { motion } from 'framer-motion';
 import { Button } from '../ui/button';
 import { AlertTriangle } from 'lucide-react';
+import { Card } from '../shared/Card';
 
 // mock data for alters (structured for future replacement with API data)
 const alerts = [
@@ -27,15 +28,9 @@ export function AlertsView() {
       className="space-y-4"
     >
       {alerts.map((alert) => (
-        <div
+        <Card
           key={alert.id}
-          className={`bg-gradient-to-br from-slate-900/90 to-cyan-900/30 rounded-2xl p-6 border ${
-            alert.severity === 'high'
-              ? 'border-red-500/50'
-              : alert.severity === 'medium'
-              ? 'border-yellow-500/50'
-              : 'border-cyan-500/30'
-          }`}
+          variant={alert.severity === 'high' ? 'danger' : alert.severity === 'medium' ? 'warning' : 'default'}
         >
           <div className="flex items-start gap-4">
             <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
@@ -76,7 +71,7 @@ export function AlertsView() {
               Resolve
             </Button>
           </div>
-        </div>
+        </Card>
       ))}
     </motion.div>
   );

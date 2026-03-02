@@ -16,7 +16,7 @@ import { Label } from './ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { Checkbox } from './ui/checkbox';
 import { Waves, Mail, Lock, User, ArrowLeft, CheckCircle2 } from 'lucide-react';
-import { FloatingParticles } from './ui/FloatingParticles';
+import { FloatingParticles } from '../components/shared/FloatingParticles';
 import { ResetPassword } from './ResetPassword';
 
 /* 

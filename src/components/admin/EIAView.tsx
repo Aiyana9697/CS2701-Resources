@@ -10,6 +10,8 @@ import { motion } from 'framer-motion';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Search, Trash2, Flag } from 'lucide-react';
+import { SearchBar } from '../shared/SearchBar';
+import { Card } from '../shared/Card';
 
 // mock data for EIA entries (structured for future replacement with API data)
 const eiaEntries = [
@@ -46,30 +48,20 @@ export function EIAView() {
       animate={{ opacity: 1, y: 0 }}
       className="space-y-4"
     >
-      <div className="bg-gradient-to-br from-slate-900/90 to-cyan-900/30 rounded-2xl p-4 border border-cyan-500/30">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-cyan-400" />
-          <Input
-            type="text"
-            placeholder="Search EIA entries..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 bg-slate-950/50 border-cyan-400/30 text-white placeholder:text-slate-400"
-          />
-        </div>
-      </div>
+      <SearchBar
+        value={searchQuery}
+        onChange={setSearchQuery}
+        placeholder="Search EIA entries..."
+      />
 
       {/*
       EIA entries are mapped over to render a card for each entry that matches search query, displaying its project name, region, submitter, date, status
       dynamic styling is applied to the status badge based on whether the EIA is approved, under review or missing data 
       action buttons for flagging or deleting an EIA entry are included on each card, with click handlers to manage those actions  
       */}
-      <div className="space-y-4">
+         <div className="space-y-4">
         {eiaEntries.map((entry) => (
-          <div
-            key={entry.id}
-            className="bg-gradient-to-br from-slate-900/90 to-cyan-900/30 rounded-2xl p-6 border border-cyan-500/30"
-          >
+          <Card key={entry.id}>
             <div className="flex items-start justify-between">
               <div className="flex-1">
                 <h4 className="text-white mb-2">{entry.project}</h4>
@@ -107,7 +99,7 @@ export function EIAView() {
                 </Button>
               </div>
             </div>
-          </div>
+          </Card>
         ))}
       </div>
     </motion.div>

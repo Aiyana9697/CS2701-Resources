@@ -9,6 +9,8 @@ import { motion } from 'framer-motion';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Search, Trash2, Flag } from 'lucide-react';
+import { SearchBar } from '../shared/SearchBar';
+import { Card } from '../shared/Card';
 
 // mock data for users (structured for future replacement with API data)
 const users = [
@@ -46,25 +48,18 @@ export function UsersView() {
       className="space-y-4"
     >
       {/* Search Bar */}
-      <div className="bg-gradient-to-br from-slate-900/90 to-cyan-900/30 rounded-2xl p-4 border border-cyan-500/30">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-cyan-400" />
-          <Input
-            type="text"
-            placeholder="Search users..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 bg-slate-950/50 border-cyan-400/30 text-white placeholder:text-slate-400"
-          />
-        </div>
-      </div>
+      <SearchBar
+        value={searchQuery}
+        onChange={setSearchQuery}
+        placeholder="Search users..."
+      />
 
       {/* Users List 
       users is mapped over to render a table row for each user that matches search query, displaying their name, email, role, join date and account status
       dynamic styling is applied to the account status badge based on whether the user is active or inactive 
       action buttons for flagging or deleting a user are included in each row, with click handlers to manage those actions
       */}
-      <div className="bg-gradient-to-br from-slate-900/90 to-cyan-900/30 rounded-2xl border border-cyan-500/30 overflow-hidden">
+       <Card className="p-0 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-slate-950/50 border-b border-cyan-500/20">
@@ -118,7 +113,7 @@ export function UsersView() {
             </tbody>
           </table>
         </div>
-      </div>
+      </Card>
     </motion.div>
   );
 }

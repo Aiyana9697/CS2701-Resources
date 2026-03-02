@@ -4,6 +4,7 @@ displays key metrics and insights on platform usage, user engagement, data contr
 */
 import { motion } from 'framer-motion';
 import { Eye, TrendingUp, Users } from 'lucide-react';
+import { Card } from '../shared/Card';
 
 // mock data for analytics (structured for future replacement with API data)
 const analytics = {
@@ -35,9 +36,8 @@ export function AnalyticsView() {
       className="space-y-6"
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
         {/* Most Viewed Regions */}
-        <div className="bg-gradient-to-br from-slate-900/90 to-cyan-900/30 rounded-2xl p-6 border border-cyan-500/30">
+        <Card>
           <h3 className="text-cyan-300 mb-4 flex items-center gap-2">
             <Eye className="w-5 h-5" />
             Most Viewed Regions
@@ -63,10 +63,10 @@ export function AnalyticsView() {
               </div>
             ))}
           </div>
-        </div>
+        </Card>
 
         {/* Active Contributors */}
-        <div className="bg-gradient-to-br from-slate-900/90 to-cyan-900/30 rounded-2xl p-6 border border-cyan-500/30">
+        <Card>
           <h3 className="text-cyan-300 mb-4 flex items-center gap-2">
             <TrendingUp className="w-5 h-5" />
             Most Active Contributors
@@ -89,7 +89,7 @@ export function AnalyticsView() {
               </div>
             ))}
           </div>
-        </div>
+        </Card>
       </div>
     </motion.div>
   );

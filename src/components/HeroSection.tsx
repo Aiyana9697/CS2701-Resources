@@ -9,7 +9,7 @@ React component that renders the hero section which:
 import { motion } from 'framer-motion';
 import { Button } from './ui/button';
 import { Waves, ChevronDown } from 'lucide-react';
-import { FloatingParticles } from './ui/FloatingParticles';
+import { FloatingParticles } from '../components/shared/FloatingParticles';
 
 /* 
 defines the main content wrapper that centers content, places it above the floating particles & paddes the section horizontally

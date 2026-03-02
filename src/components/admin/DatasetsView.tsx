@@ -9,6 +9,8 @@ import { motion } from 'framer-motion';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Search, Trash2, Flag } from 'lucide-react';
+import { SearchBar } from '../shared/SearchBar';
+import { Card } from '../shared/Card';
 
 // mock data for datasets (structured for future replacement with API data)
 const datasets = [
@@ -45,30 +47,20 @@ export function DatasetsView() {
       animate={{ opacity: 1, y: 0 }}
       className="space-y-4"
     >
-      <div className="bg-gradient-to-br from-slate-900/90 to-cyan-900/30 rounded-2xl p-4 border border-cyan-500/30">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-cyan-400" />
-          <Input
-            type="text"
-            placeholder="Search datasets..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 bg-slate-950/50 border-cyan-400/30 text-white placeholder:text-slate-400"
-          />
-        </div>
-      </div>
+      <SearchBar
+        value={searchQuery}
+        onChange={setSearchQuery}
+        placeholder="Search datasets..."
+      />
 
       {/*
       datasets is mapped over to render a card for each dataset that matches search query, displaying its name, uploader, date, size, verification status
       dynamic styling is applied to the verification status badge based on whether the dataset is verified, pending review or flagged 
       action buttons for flagging or deleting a dataset are included on each card, with click handlers to manage those actions
       */}
-      <div className="space-y-4">
+        <div className="space-y-4">
         {datasets.map((dataset) => (
-          <div
-            key={dataset.id}
-            className="bg-gradient-to-br from-slate-900/90 to-cyan-900/30 rounded-2xl p-6 border border-cyan-500/30"
-          >
+          <Card key={dataset.id}>
             <div className="flex items-start justify-between">
               <div className="flex-1">
                 <h4 className="text-white mb-2">{dataset.name}</h4>
@@ -108,7 +100,7 @@ export function DatasetsView() {
                 </Button>
               </div>
             </div>
-          </div>
+          </Card>
         ))}
       </div>
     </motion.div>
