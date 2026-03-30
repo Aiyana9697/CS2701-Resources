@@ -1,6 +1,6 @@
-package com.oceaniq.user.repository;
+package com.oceaniq.stats.repository;
 
-import com.oceaniq.user.entity.UserStats;
+import com.oceaniq.stats.entity.UserStats;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

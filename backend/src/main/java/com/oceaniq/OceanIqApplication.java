@@ -12,8 +12,3 @@ public class OceanIqApplication {
 	}
 
 }
-
-git checkout backend
-git add .
-git commit -m "feat: enable JPA auditing and rename application entry point"
-git push origin backend

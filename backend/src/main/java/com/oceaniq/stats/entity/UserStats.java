@@ -1,16 +1,19 @@
-package com.oceaniq.user.entity;
+package com.oceaniq.stats.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.Getter;
 import org.hibernate.annotations.UpdateTimestamp;
+import com.oceaniq.user.entity.User;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "user_stats")
-@Data
+@Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserStats {
