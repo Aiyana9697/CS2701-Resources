@@ -10,6 +10,10 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+/**
+ * Response DTTO representing user info returned by the API 
+ * object is sent to the client instead of the user entity to control what data is exposed 
+*/
 @Getter
 @Setter
 @NoArgsConstructor
@@ -23,8 +27,6 @@ public class UserResponse {
     private UserStatus status;
     private LocalDate joinDate;
     private LocalDateTime lastLogin;
-    private String avatarUrl;
-    private Integer modulesCompleted;
-    private Integer datasetsUploaded;
+    private String avatarUrl;;
     private LocalDateTime createdAt;
 }

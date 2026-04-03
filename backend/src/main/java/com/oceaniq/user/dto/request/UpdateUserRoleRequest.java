@@ -5,6 +5,12 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Setter;
 import lombok.Getter;
 
+/**
+ * Request DTO for updating a user's role (used by admins)
+ * 
+ * Contains:
+ * - role: required field for the new role to assign to the user (message is returned if role is missing in request)
+*/
 @Getter
 @Setter
 public class UpdateUserRoleRequest {

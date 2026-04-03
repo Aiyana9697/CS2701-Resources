@@ -22,4 +22,5 @@ public class StatsResponse {
     private Integer currentStreak;
     private Integer longestStreak;
     private LocalDateTime lastActivityDate;
+    private LocalDateTime updatedAt;
 }
