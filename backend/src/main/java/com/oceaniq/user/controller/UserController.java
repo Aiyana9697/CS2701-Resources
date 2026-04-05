@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.*;
 @PreAuthorize("hasRole('ADMIN')")
 public class UserController {
 
+    // Injecting UserService to handle business logic related to user management
     private final UserService userService;
 
     /**
@@ -51,7 +52,7 @@ public class UserController {
      * 
      * creates a Pageable object containing pagination information (page number / page size) 
      * object is passed to userService.getUsers method to retrieve paginated list of users based on provided filters & pagination settings
-     * returns a successful (HTTP 200 OK) response with a list of users wrapped inside a ApiResponse object, which is serialized to JSON and returned to the client
+     * returns a successful (HTTP 200 OK) response with a list of users wrapped inside a ApiResponse object, which is serialized to JSON and returned 
      */
     @GetMapping
     public ResponseEntity<ApiResponse<Page<UserResponse>>> getUsers(

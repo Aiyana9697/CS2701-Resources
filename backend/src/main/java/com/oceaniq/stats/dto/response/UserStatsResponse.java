@@ -7,11 +7,16 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+
+/**
+ * Response DTO representing user statistics info returned by API
+ * object is sent to client instead of stats entity to control what data is exposed 
+*/
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class StatsResponse {
+public class UserStatsResponse {
     
     private Long userId;
     private Integer modulesCompleted;
