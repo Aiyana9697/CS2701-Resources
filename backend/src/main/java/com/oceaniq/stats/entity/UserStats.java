@@ -26,7 +26,7 @@ public class UserStats {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+     
     // one-to-one relationship with User entity (each user has one stats record)
     // foreign key column 'user_id' references the 'id' column in 'users' table (cannot be null / must be unique)
     @OneToOne
@@ -61,4 +61,4 @@ public class UserStats {
     // timestamp of when stats record was last updated (automatically updated by Hibernate whenever record is modified)
     @UpdateTimestamp
     private LocalDateTime updatedAt;
-}
+}  
