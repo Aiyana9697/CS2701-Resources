@@ -1,63 +1,58 @@
 package com.oceaniq.incident.controller;
 
-
-import com.oceaniq.incident.entity.IncidentReport;
-import com.oceaniq.incident.repository.IncidentReportRepository;
+import com.oceaniq.incident.dto.request.CreateIncidentReportRequest;
+import com.oceaniq.incident.dto.request.UpdateIncidentReportStatusRequest;
+import com.oceaniq.incident.dto.response.IncidentReportResponse;
+import com.oceaniq.incident.service.IncidentReportService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
-@RestController // tells springboot that this class handles http requests
-// and the value returned by the methods converts to JSON and sends it back to
-// the client.
+@RestController
 public class IncidentReportController {
 
-    private final IncidentReportRepository incidentReportRepository;
+    private final IncidentReportService incidentReportService;
 
-    public IncidentReportController(IncidentReportRepository incidentReportRepository) {
-        this.incidentReportRepository = incidentReportRepository;
+    public IncidentReportController(IncidentReportService incidentReportService) {
+        this.incidentReportService = incidentReportService;
     }
 
     @GetMapping("/report")
-    public ResponseEntity<List<IncidentReport>> getAll() {
-        List<IncidentReport> reports = (List<IncidentReport>) incidentReportRepository.findAll();
-        return ResponseEntity.ok(reports);
+    public ResponseEntity<List<IncidentReportResponse>> getAll() {
+        return ResponseEntity.ok(incidentReportService.getAllReports());
     }
 
     @PostMapping("/report")
-    public ResponseEntity<IncidentReport> add(@RequestBody IncidentReport report) {
-        incidentReportRepository.save(report);
-        return ResponseEntity.status(HttpStatus.CREATED).body(report);
+    public ResponseEntity<IncidentReportResponse> add(@Valid @RequestBody CreateIncidentReportRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(incidentReportService.createReport(request));
     }
 
     @GetMapping("/report/{id}")
-    public ResponseEntity<IncidentReport> getById(@PathVariable Integer id) {
-        Optional<IncidentReport> report = incidentReportRepository.findById(id);
-        return report.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<IncidentReportResponse> getById(@PathVariable Integer id) {
+        return ResponseEntity.ok(incidentReportService.getReportById(id));
     }
 
     @DeleteMapping("/report/{id}")
     public ResponseEntity<String> delete(@PathVariable Integer id) {
-        if (!incidentReportRepository.existsById(id)) {
-            return ResponseEntity.notFound().build();
-        }
-        incidentReportRepository.deleteById(id);
+        incidentReportService.deleteReport(id);
         return ResponseEntity.ok("Report deleted");
     }
 
+    @PatchMapping("/report/{id}/status")
+    public ResponseEntity<IncidentReportResponse> updateStatus(@PathVariable Integer id,
+            @Valid @RequestBody UpdateIncidentReportStatusRequest request) {
+        return ResponseEntity.ok(incidentReportService.updateReportStatus(id, request));
+    }
+
     @GetMapping("/report/findByTitle")
-    public ResponseEntity<Object> findByTitle(@RequestParam(value = "title", required = false) String title) {
-        if (title == null || title.isBlank()) { // searches the report by its title
-            return ResponseEntity.badRequest().body("title parameter is required");
+    public ResponseEntity<IncidentReportResponse> findByTitle(
+            @RequestParam(value = "title", required = false) String title) {
+        if (title == null || title.isBlank()) {
+            return ResponseEntity.badRequest().build();
         }
-        IncidentReport report = incidentReportRepository.findByTitle(title);
-        if (report == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(report);
+        return ResponseEntity.ok(incidentReportService.getReportByTitle(title));
     }
 }
