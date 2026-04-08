@@ -41,6 +41,7 @@ public class ModuleResponse {
         private String duration;
         private String type;
         private String resourceUrl;
+            
     }
 }
 
