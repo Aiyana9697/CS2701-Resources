@@ -28,8 +28,10 @@ import java.util.stream.StreamSupport;
  * - Updating an existing evidence file's details
  * - Deleting an evidence file
  *
- * Service methods interact with IncidentEvidenceRepository to perform database operations
- * and handle converting entities to IncidentEvidenceResponse DTOs to return data to the client
+ * Service methods interact with IncidentEvidenceRepository to perform database
+ * operations
+ * and handle converting entities to IncidentEvidenceResponse DTOs to return
+ * data to the client
  */
 @Service
 @RequiredArgsConstructor
@@ -40,7 +42,8 @@ public class IncidentEvidenceService {
     /**
      * Retrieves all incident evidence files
      * calls incidentEvidenceRepository.findAll to retrieve all evidence files
-     * converts each IncidentEvidence entity to IncidentEvidenceResponse DTO using convertToResponse method
+     * converts each IncidentEvidence entity to IncidentEvidenceResponse DTO using
+     * convertToResponse method
      *
      * @return list of all evidence files
      */
@@ -55,7 +58,8 @@ public class IncidentEvidenceService {
      * Retrieves a single evidence file by its ID
      * calls incidentEvidenceRepository.findById to find evidence with specified ID
      * if evidence is not found throws ResourceNotFoundException
-     * if evidence is found, converts IncidentEvidence entity to IncidentEvidenceResponse DTO
+     * if evidence is found, converts IncidentEvidence entity to
+     * IncidentEvidenceResponse DTO
      *
      * @param fileId the ID of the evidence file to retrieve
      * @return the evidence file details if found, otherwise a 404 error
@@ -69,9 +73,11 @@ public class IncidentEvidenceService {
 
     /**
      * Retrieves a single evidence file by its file name
-     * calls incidentEvidenceRepository.findByFileName to find evidence with specified file name
+     * calls incidentEvidenceRepository.findByFileName to find evidence with
+     * specified file name
      * if evidence is not found throws ResourceNotFoundException
-     * if evidence is found, converts IncidentEvidence entity to IncidentEvidenceResponse DTO
+     * if evidence is found, converts IncidentEvidence entity to
+     * IncidentEvidenceResponse DTO
      *
      * @param fileName the file name of the evidence to retrieve
      * @return the evidence file details if found, otherwise a 404 error
@@ -88,16 +94,27 @@ public class IncidentEvidenceService {
 
     /**
      * Uploads a new incident evidence file
-     * maps fields from CreateIncidentEvidenceRequest DTO to a new IncidentEvidence entity
+     * maps fields from CreateIncidentEvidenceRequest DTO to a new IncidentEvidence
+     * entity
      * sets uploadedAt to the current date and time
      * saves the new evidence using incidentEvidenceRepository.save
-     * converts saved IncidentEvidence entity to IncidentEvidenceResponse DTO and returns it
+     * converts saved IncidentEvidence entity to IncidentEvidenceResponse DTO and
+     * returns it
      *
      * @param request the details of the evidence file to upload
      * @return the created evidence file details
      */
     @Transactional
     public IncidentEvidenceResponse createEvidence(CreateIncidentEvidenceRequest request) {
+        // validation rules
+        if (!request.getMimeType().equals("application/pdf")) {
+            throw new IllegalArgumentException("Only PDF files allowed");
+        }
+
+        if (request.getFileSize() > 5_000_000) {
+            throw new IllegalArgumentException("File size exceeds limit (5MB)");
+        }
+        // create entity
         IncidentEvidence evidence = new IncidentEvidence();
 
         evidence.setReportId(request.getReportId());
@@ -116,10 +133,12 @@ public class IncidentEvidenceService {
      * Updates the details of an existing evidence file
      * calls incidentEvidenceRepository.findById to find evidence with specified ID
      * if evidence is not found throws ResourceNotFoundException
-     * if evidence is found, updates the relevant fields and saves using incidentEvidenceRepository.save
-     * converts updated IncidentEvidence entity to IncidentEvidenceResponse DTO and returns it
+     * if evidence is found, updates the relevant fields and saves using
+     * incidentEvidenceRepository.save
+     * converts updated IncidentEvidence entity to IncidentEvidenceResponse DTO and
+     * returns it
      *
-     * @param fileId the ID of the evidence file to update
+     * @param fileId  the ID of the evidence file to update
      * @param request the updated details for the evidence file
      * @return the updated evidence file details
      */
