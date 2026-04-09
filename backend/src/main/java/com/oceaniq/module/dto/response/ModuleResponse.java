@@ -5,8 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Setter;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -23,17 +21,15 @@ public class ModuleResponse {
     private String duration;
     private String category;
     private DifficultyLevel difficultyLevel;
+    private Integer progress;
+    private String status;
     private List<LessonResponse> lessons;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
     
-
-    @Setter
     @Getter
+    @Setter
     @NoArgsConstructor
     @AllArgsConstructor
     public static class LessonResponse {
-        
         private Long id;
         private String title;
         private String content;
@@ -41,7 +37,6 @@ public class ModuleResponse {
         private String duration;
         private String type;
         private String resourceUrl;
-            
     }
 }
 
