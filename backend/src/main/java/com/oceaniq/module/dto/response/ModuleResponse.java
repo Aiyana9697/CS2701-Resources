@@ -7,6 +7,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import java.util.List;
 
+/**
+ * Response DTO representing a learning module with its lessons and user's progress info
+ * includes: 
+ * module metadata (id, title, description, icon, lessons count, duration, category, difficulty level)
+ * user's progress (percentage and status) 
+ * list of lessons in the module + lesson metadata (id, title, content, order index, duration, type, resource URL)
+*/
 @Getter
 @Setter
 @NoArgsConstructor
