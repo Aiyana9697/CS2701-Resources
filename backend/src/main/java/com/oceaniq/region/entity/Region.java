@@ -11,7 +11,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
 
 /**
- * Entity representing a geographical location within the platform.
+ * Lookup entity representing a geographical location 
  * Used to categorise datasets / incidents / resources based on locations
  */
 @Entity
