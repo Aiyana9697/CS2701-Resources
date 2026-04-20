@@ -29,9 +29,7 @@ public class GlobalExceptionHandler {
      @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ApiResponse<Void>> handleResourceNotFoundException(
             ResourceNotFoundException ex, WebRequest request) {
-
         log.error("Resource not found: {}", ex.getMessage());
-
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
             .body(ApiResponse.error(ex.getMessage()));
     }
