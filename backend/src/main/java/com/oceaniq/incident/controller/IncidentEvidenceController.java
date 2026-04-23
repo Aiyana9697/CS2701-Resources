@@ -25,12 +25,12 @@ public class IncidentEvidenceController {
         return ResponseEntity.ok(incidentEvidenceService.getAllEvidence());
     }
 
-    @PostMapping("/reportfile")
+    @PostMapping("/reportfile") 
     public ResponseEntity<IncidentEvidenceResponse> add(@Valid @RequestBody CreateIncidentEvidenceRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(incidentEvidenceService.createEvidence(request));
     }
 
-    @GetMapping("/reportfile/{id}")
+    @GetMapping("/reportfile/{id}")  // find a report file based on the report file's ID
     public ResponseEntity<IncidentEvidenceResponse> getById(@PathVariable Integer id) {
         return ResponseEntity.ok(incidentEvidenceService.getEvidenceById(id));
     }
