@@ -1,61 +1,60 @@
 package com.oceaniq.incident.controller;
 
-import com.oceaniq.incident.entity.IncidentEvidence;
-import com.oceaniq.incident.repository.IncidentEvidenceRepository;
+import com.oceaniq.infrastructure.shared.dto.response.ApiResponse;
+import com.oceaniq.incident.dto.request.CreateIncidentEvidenceRequest;
+import com.oceaniq.incident.dto.request.UpdateIncidentEvidenceRequest;
+import com.oceaniq.incident.dto.response.IncidentEvidenceResponse;
+import com.oceaniq.incident.service.IncidentEvidenceService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class IncidentEvidenceController {
 
-    private final IncidentEvidenceRepository incidentEvidenceRepository;
+    private final IncidentEvidenceService incidentEvidenceService;
 
-    public IncidentEvidenceController(IncidentEvidenceRepository incidentEvidenceRepository) {
-        this.incidentEvidenceRepository = incidentEvidenceRepository;
+    public IncidentEvidenceController(IncidentEvidenceService incidentEvidenceService) {
+        this.incidentEvidenceService = incidentEvidenceService;
     }
 
     @GetMapping("/reportfile")
-    public ResponseEntity<List<IncidentEvidence>> getAll() {
-        List<IncidentEvidence> files = (List<IncidentEvidence>) incidentEvidenceRepository.findAll();
-        return ResponseEntity.ok(files);
+    public ResponseEntity<ApiResponse<List<IncidentEvidenceResponse>>> getAll() {
+        return ResponseEntity.ok(ApiResponse.success(incidentEvidenceService.getAllEvidence()));
     }
 
     @PostMapping("/reportfile")
-    public ResponseEntity<IncidentEvidence> add(@RequestBody IncidentEvidence incidentEvidence) {
-        incidentEvidenceRepository.save(incidentEvidence);
-        return ResponseEntity.status(HttpStatus.CREATED).body(incidentEvidence);
+    public ResponseEntity<ApiResponse<IncidentEvidenceResponse>> add(@Valid @RequestBody CreateIncidentEvidenceRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.success("Evidence created successfully", incidentEvidenceService.createEvidence(request)));
     }
 
     @GetMapping("/reportfile/{id}")
-    public ResponseEntity<IncidentEvidence> getById(@PathVariable Integer id) {
-        Optional<IncidentEvidence> file = incidentEvidenceRepository.findById(id);
-        return file.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<ApiResponse<IncidentEvidenceResponse>> getById(@PathVariable Integer id) {
+        return ResponseEntity.ok(ApiResponse.success(incidentEvidenceService.getEvidenceById(id)));
     }
 
     @DeleteMapping("/reportfile/{id}")
-    public ResponseEntity<String> delete(@PathVariable Integer id) {
-        if (!incidentEvidenceRepository.existsById(id)) {
-            return ResponseEntity.notFound().build();
-        }
-        incidentEvidenceRepository.deleteById(id);
-        return ResponseEntity.ok("Report file deleted");
+    public ResponseEntity<ApiResponse<Void>> delete(@PathVariable Integer id) {
+        incidentEvidenceService.deleteEvidence(id);
+        return ResponseEntity.ok(ApiResponse.success("Report file deleted", null));
+    }
+
+    @PutMapping("/reportfile/{id}")
+    public ResponseEntity<ApiResponse<IncidentEvidenceResponse>> update(@PathVariable Integer id,
+            @Valid @RequestBody UpdateIncidentEvidenceRequest request) {
+        return ResponseEntity.ok(ApiResponse.success("Evidence updated successfully", incidentEvidenceService.updateEvidence(id, request)));
     }
 
     @GetMapping("/reportfile/findByFileName")
-    public ResponseEntity<Object> findByFileName(@RequestParam(value = "fileName", required = false) String fileName) {
-        // validate that filename is provided and not blank
+    public ResponseEntity<ApiResponse<IncidentEvidenceResponse>> findByFileName(
+            @RequestParam(value = "fileName", required = false) String fileName) {
         if (fileName == null || fileName.isBlank()) {
-            return ResponseEntity.badRequest().body("fileName parameter is required");
+            return ResponseEntity.badRequest().body(ApiResponse.error("File name is required"));
         }
-        IncidentEvidence file = incidentEvidenceRepository.findByFileName(fileName);
-        if (file == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(file);
+        return ResponseEntity.ok(ApiResponse.success(incidentEvidenceService.getEvidenceByFileName(fileName)));
     }
 }
