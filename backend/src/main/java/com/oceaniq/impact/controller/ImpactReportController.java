@@ -8,10 +8,13 @@ import com.oceaniq.infrastructure.shared.dto.response.ApiResponse;
 import com.oceaniq.infrastructure.shared.dto.response.PaginatedResponse;
 import com.oceaniq.infrastructure.security.UserPrincipal;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -79,15 +82,16 @@ public class ImpactReportController {
      * calls service.createReport() to create a new impact report based on the request data + ID of the authenticated user
      * returns a successful (HTTP 200 OK) response with the created report wrapped inside an ApiResponse object
      * which is serialized to JSON and returned to the client
-     */
+    */
     @PostMapping
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiResponse<ImpactReportResponse>> createReport(
-            @RequestBody CreateImpactReportRequest request,
+            @Valid @RequestBody CreateImpactReportRequest request,
             @AuthenticationPrincipal UserPrincipal currentUser) {
 
         ImpactReportResponse response =service.createReport(request, currentUser.getId());
 
-        return ResponseEntity.ok(
+        return ResponseEntity.status(HttpStatus.CREATED).body(
             ApiResponse.success("Report created successfully", response)
         );
     }
