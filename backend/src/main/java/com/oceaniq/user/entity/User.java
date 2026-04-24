@@ -37,6 +37,9 @@ public class User {
     @Column(nullable = false, length = 100)
     private String name;
 
+    @Column(name = "username", unique = true, length = 100)
+    private String username;
+
     // user email (max length 100 chars / cannot be null / must be unique)
     @Column(nullable = false, unique = true, length = 100)
     private String email;
