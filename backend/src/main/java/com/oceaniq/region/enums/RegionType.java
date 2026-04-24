@@ -26,5 +26,10 @@ public enum RegionType {
     MARINE_PROTECTED_AREA,
     ECONOMIC_ZONE,
 
+    TRENCH,
+    BASIN,
+    RIDGE,
+    PLATFORM,
+
     OTHER
 }
