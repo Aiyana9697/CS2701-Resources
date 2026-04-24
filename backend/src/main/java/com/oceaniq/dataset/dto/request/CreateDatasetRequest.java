@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Setter;
 import lombok.Getter;
+import java.util.Set;
 
 /**
  * Request DTO for creating a new dataset
@@ -27,9 +28,16 @@ public class CreateDatasetRequest {
     @NotBlank(message = "Category is required")
     private String category;
     
-    // Region (location) associated with the dataset (optional)
-    private String region;
+    /**
+     * Region (location) associated with the dataset
+     * regionId is required and should correspond to an existing Region entity in database
+     */
+    @NotNull(message = "Region is required")
+    private Long regionId;
     
+    // optional list of species the dataset is related to
+    private Set<Long> speciesIds;
+
     // URL or path to the dataset file (required)
     @NotBlank(message = "File URL is required")
     private String fileUrl;
