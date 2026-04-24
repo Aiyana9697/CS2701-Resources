@@ -6,5 +6,9 @@ public enum ItemType {
     DATASET, 
     DISCUSSION, 
     PORTAL_CONTENT,
-    LEARNING_MODULE
+    REGION, 
+    MODULE, 
+    SPECIES, 
+    INCIDENT, 
+    OTHER
 }
