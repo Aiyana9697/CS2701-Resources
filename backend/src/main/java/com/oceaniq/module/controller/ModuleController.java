@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -110,8 +111,9 @@ public class ModuleController {
      * including module ID, progress percentage, current lesson ID (optional)
      * calls moduleService.updateProgress with the authenticated user's ID + progress update request to update the user's progress for module
      * if update is successful, a successful (HTTP 200 OK) response is returned with a message indicating progress was updated successfully
-     */
+    */
     @PostMapping("/progress")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiResponse<Void>> updateProgress(
             @Valid @RequestBody UpdateProgressRequest request,
             @AuthenticationPrincipal UserPrincipal currentUser) {
