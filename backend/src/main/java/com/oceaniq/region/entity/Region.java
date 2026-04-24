@@ -39,15 +39,15 @@ public class Region {
     private String coordinates;
     
     // Name of the ocean the region belongs to
-    @Column(length = 100)
+    @Column(name = "ocean_name", length = 100)
     private String oceanName;
     
     // Type of region (Ocean, Sea, Reef, Archipelago)
-    @Column(length = 50)
+    @Enumerated(EnumType.STRING)
     private RegionType type;
 
     // Timestamp indicating when region was created, automatically populated when created
     @CreationTimestamp
-    @Column(nullable = false, updatable = false)
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 }
