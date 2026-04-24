@@ -20,7 +20,6 @@ const initialDiscussions = [
   {
     id: 1,
     author: 'Dr. Sarah Chen',
-    role: 'Marine Biologist',
     title: 'Impact of mining on hydrothermal vent ecosystems',
     replies: 2,
     timestamp: '2 hours ago',
@@ -33,7 +32,6 @@ const initialDiscussions = [
   {
     id: 2,
     author: 'Prof. James Wilson',
-    role: 'Ocean Policy Expert',
     title: 'Regulatory frameworks for sustainable deep-sea exploration',
     replies: 3,
     timestamp: '5 hours ago',
@@ -47,13 +45,12 @@ const initialDiscussions = [
   {
     id: 3,
     author: 'Dr. Maya Patel',
-    role: 'Environmental Scientist',
     title: 'Latest findings on APEI effectiveness',
     replies: 0,
     timestamp: '1 day ago',
     likes: 0,
     dislikes: 0,
-    content: "Levy gambits 500$ for more activity in his bank account",
+    content: "Levy gambits 500$ for more activity in his bank account",    
     reaction: null as Reaction,
     comments: [] as string[],
   },
@@ -113,7 +110,12 @@ export function ResearchHub() {
   const [openRepliesId, setOpenRepliesId] = useState<number | null>(null);
   const [replyText, setReplyText] = useState(''); 
 
-  
+  const [isNewDiscussionOpen, setIsNewDiscussionOpen] = useState(false);
+  const [newDiscussionTitle, setNewDiscussionTitle] = useState('');
+  const [newDiscussionBody, setNewDiscussionBody] = useState('');
+  const [newDiscussionAuthor, setNewDiscussionAuthor] = useState('');
+
+
 
   const [discussions, setDiscussions] = useState(initialDiscussions);
 
@@ -194,13 +196,31 @@ export function ResearchHub() {
     setOpenRepliesId(discussionId);
   };
   
+  const handleCreateDiscussion = () => {
+  if (!newDiscussionTitle.trim() || !newDiscussionBody.trim()) return;
 
-  // handles checking and unchecking options in the popup
+  const newDiscussion = {
+    id: Date.now(),                
+    title: newDiscussionTitle.trim(),                
+    author: newDiscussionAuthor.trim(), 
+    likes: 0,
+    dislikes: 0,
+    reaction: null,
+    replies: 0,
+    comments: [],
+  };
+
+  setDiscussions(prev => [newDiscussion, ...prev]);
+  setNewDiscussionTitle('');
+  setNewDiscussionBody('');
+  setIsNewDiscussionOpen(false);
+  };
+
   const toggleOption = (value: string) => {
     setSelected(prev =>
       prev.includes(value)
-        ? prev.filter(v => v !== value)   // remove if already selected
-        : [...prev, value]                // add if not selected
+        ? prev.filter(v => v !== value)   
+        : [...prev, value]              
     );
   };
 
@@ -388,6 +408,77 @@ export function ResearchHub() {
           */}
           <TabsContent value="discussions">
             <Card className="bg-slate-800/50 border-cyan-500/20 backdrop-blur-sm p-6">
+
+              <Button
+              className="w-full mt-6 bg-cyan-500 hover:bg-cyan-600 text-white"
+              onClick={() => setIsNewDiscussionOpen(true)}
+              >
+              Start New Discussion
+              </Button>
+
+
+              {isNewDiscussionOpen && (
+              <Card className="mb-4 bg-slate-900/60 border-cyan-500/40 p-4">
+                <h3 className="text-white mb-3">Start a new discussion</h3>
+                
+                <div>
+                  <label className="text-sm text-slate-300 mb-1 block">
+                    Written by
+                  </label>
+                  <Input
+                    value={newDiscussionAuthor}
+                    onChange={e => setNewDiscussionAuthor(e.target.value)}
+                    placeholder="Author name..."
+                    className="bg-slate-950/60 border-slate-700 text-white"
+                  />
+                </div>
+
+
+                <div className="space-y-3">
+                  <div>
+                    <label className="text-sm text-slate-300 mb-1 block">
+                      Title
+                    </label>
+                    <Input
+                      value={newDiscussionTitle}
+                      onChange={e => setNewDiscussionTitle(e.target.value)}
+                      placeholder="Enter a clear, descriptive title..."
+                      className="bg-slate-950/60 border-slate-700 text-white"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-sm text-slate-300 mb-1 block">
+                      Description
+                    </label>
+                    <Textarea
+                      value={newDiscussionBody}
+                      onChange={e => setNewDiscussionBody(e.target.value)}
+                      placeholder="Explain what you want to discuss..."
+                      rows={4}
+                      className="bg-slate-950/60 border-slate-700 text-white"
+                    />
+                  </div>
+
+                  <div className="flex justify-end gap-2">
+                    <Button
+                      variant="outline"
+                      className="border-slate-600 text-slate-300"
+                      onClick={() => setIsNewDiscussionOpen(false)}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      className="bg-cyan-500 hover:bg-cyan-600 text-white"
+                      onClick={handleCreateDiscussion}
+                    >
+                      Post 
+                    </Button>
+                  </div>
+                </div>
+              </Card>
+            )}
+
               <div className="space-y-4">
                 {discussions.map((discussion, index) => (
                   
@@ -400,6 +491,8 @@ export function ResearchHub() {
                     
                     {/*left side */}
                     <Card className="bg-slate-900/50 border-slate-700 hover:border-cyan-500/50 transition-all p-4 cursor-pointer">
+
+                        
                       <div className="flex items-start justify-between">
                         {/* left side */}
                         <div className='flex-1'>
@@ -409,7 +502,7 @@ export function ResearchHub() {
                           </div>
                           <div className="flex items-center gap-2 mt-1">
                             <p className="text-sm text-slate-400">
-                              by <span className="text-cyan-400">{discussion.author}</span> • {discussion.role}
+                              by <span className="text-cyan-400">{discussion.author}</span>
                             </p>
 
                           </div>
@@ -523,9 +616,8 @@ export function ResearchHub() {
                 ))}
               </div>
 
-              <Button className="w-full mt-6 bg-cyan-500 hover:bg-cyan-600 text-white">
-                Start New Discussion
-              </Button>
+              
+
             </Card>
           </TabsContent>
 
