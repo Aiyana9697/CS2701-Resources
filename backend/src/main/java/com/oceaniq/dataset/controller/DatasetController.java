@@ -65,6 +65,8 @@ public class DatasetController {
             @RequestParam(required = false) String search,
             @RequestParam(required = false) DatasetStatus status,
             @RequestParam(required = false) String category,
+            @RequestParam(required = false) Long regionId,     
+            @RequestParam(required = false) Long speciesId,     
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(defaultValue = "uploadDate") String sortBy,
@@ -77,7 +79,7 @@ public class DatasetController {
         Pageable pageable = PageRequest.of(page, size, sort);
         
         Page<DatasetResponse> datasets = datasetService.getDatasets(
-            search, status, category, pageable);
+            search, status, category, regionId, speciesId, pageable);
         
         PaginatedResponse<DatasetResponse> response = new PaginatedResponse<>(
             datasets.getContent(),
@@ -116,6 +118,7 @@ public class DatasetController {
      * if creation fails (e.g. due to validation errors), throws an exception which results in an error response being returned to the client
     */
     @PostMapping
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiResponse<DatasetResponse>> createDataset(
             @Valid @RequestBody CreateDatasetRequest request,
             @AuthenticationPrincipal UserPrincipal currentUser) {
@@ -158,7 +161,7 @@ public class DatasetController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<DatasetResponse>> flagDataset(
             @PathVariable Long id,
-            @RequestBody FlagRequest request) {
+            @Valid @RequestBody FlagRequest request) {
         DatasetResponse dataset = datasetService.flagDataset(id, request);
         return ResponseEntity.ok(ApiResponse.success("Dataset flagged successfully", dataset));
     }
@@ -193,4 +196,5 @@ public class DatasetController {
         datasetService.incrementDownloadCount(id);
         return ResponseEntity.ok(ApiResponse.success("Download count incremented", null));
     }
+
 }
