@@ -2,6 +2,10 @@ package com.oceaniq.dataset.entity;
 
 import com.oceaniq.user.entity.User;
 import com.oceaniq.dataset.enums.DatasetStatus;
+import com.oceaniq.region.entity.Region;
+import com.oceaniq.species.entity.Species;
+
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Setter;
@@ -12,6 +16,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 /**
  * Entity representing a dataset uploaded by users (maps to 'datasets' table in database)
@@ -68,9 +73,28 @@ public class Dataset {
     @Column(length = 100)
     private String category;
     
-    // region (location) associated with dataset (max length 100 chars)
-    @Column(length = 100)
-    private String region;
+    /**
+     * region (location) associated with dataset (max length 100 chars)
+     * many-to-one relationship with Region entity (many datasets --> one region)
+     * fetch type LAZY - region data is only loaded from database when accessed 
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "region_id")
+    private Region region;
+
+    /**
+     * many-to-many relationship with Species entity (many datasets --> many species)
+     * join table 'dataset_species' with foreign keys 'dataset_id' and 'species_id
+     * inverse join column 'species_id' references id in species table (foreign key constraint)
+    */
+    @ManyToMany
+    @JoinTable(
+        name = "dataset_species",
+        joinColumns = @JoinColumn(name = "dataset_id"),
+        inverseJoinColumns = @JoinColumn(name = "species_id")
+    )
+    // this join table stores the many-to-many links between datasets and species
+    private Set<Species> species;
     
     // number of times dataset has been downloaded (cannot be null, defaults to 0)
     @Column(nullable = false)
