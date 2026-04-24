@@ -40,7 +40,7 @@ public class LearningModule {
     private String description;
     
     // icon representing module (URL or icon name / max length 50 chars)
-    @Column(length = 50)
+    @Column(length = 255)
     private String icon;
     
     // total number of lessons in the module (cannot be null)
