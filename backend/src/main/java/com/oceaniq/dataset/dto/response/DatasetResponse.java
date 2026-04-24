@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 /**
  * Response DTO for returning dataset information
@@ -19,6 +20,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class DatasetResponse {
     
+    // basic dataset fields returned in list/detail API responses
     private Long id;
     private String name;
     private String description;
@@ -29,7 +31,13 @@ public class DatasetResponse {
     private String fileUrl;
     private DatasetStatus status;
     private String category;
+
+    // region and species fields are flattened so the frontend can render them directly
     private String region;
+    private Long regionId;
+    private String regionName;
+    private Set<Long> speciesIds;
+    private Set<String> speciesNames;
     private Integer downloadCount;
     private LocalDateTime createdAt;
 }
