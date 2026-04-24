@@ -22,96 +22,108 @@ public class DiscussionService {
         this.replyRepository = replyRepository;
     }
 
-    public List<Discussion> getAllDiscussionsRaw() {
-        return discussionRepository.findAll();
-    }
-
     public List<DiscussionResponse> getAllDiscussions() {
         return discussionRepository.findAll()
                 .stream()
-                .map(this::mapToResponse)
+                .map(this::toResponse)
                 .toList();
     }
 
     public DiscussionResponse createDiscussion(Discussion discussion) {
-        if (discussion.getReplies() == null) discussion.setReplies(0);
-        if (discussion.getLikes() == null) discussion.setLikes(0);
-        if (discussion.getDislikes() == null) discussion.setDislikes(0);
-        if (discussion.getTimestamp() == null || discussion.getTimestamp().isBlank()) {
-            discussion.setTimestamp("just now");
+        if (isBlank(discussion.getAuthor()) || isBlank(discussion.getTitle()) || isBlank(discussion.getContent())) {
+            throw new IllegalArgumentException("Author, title and content are required");
+        }
+
+        discussion.setLikes(0);
+        discussion.setDislikes(0);
+        discussion.setReplies(0);
+
+        if (isBlank(discussion.getTimestamp())) {
+            discussion.setTimestamp("Just now");
         }
 
         Discussion saved = discussionRepository.save(discussion);
-        return mapToResponse(saved);
+        return toResponse(saved);
     }
 
     public DiscussionResponse likeDiscussion(Long id) {
-        Discussion discussion = discussionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Discussion not found"));
-
-        discussion.setLikes(discussion.getLikes() + 1);
-        Discussion updated = discussionRepository.save(discussion);
-
-        return mapToResponse(updated);
+        Discussion discussion = findDiscussion(id);
+        discussion.setLikes(nullToZero(discussion.getLikes()) + 1);
+        return toResponse(discussionRepository.save(discussion));
     }
 
     public DiscussionResponse dislikeDiscussion(Long id) {
-        Discussion discussion = discussionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Discussion not found"));
-
-        discussion.setDislikes(discussion.getDislikes() + 1);
-        Discussion updated = discussionRepository.save(discussion);
-
-        return mapToResponse(updated);
+        Discussion discussion = findDiscussion(id);
+        discussion.setDislikes(nullToZero(discussion.getDislikes()) + 1);
+        return toResponse(discussionRepository.save(discussion));
     }
 
     public List<Reply> getReplies(Long id) {
+        findDiscussion(id);
         return replyRepository.findByDiscussionId(id);
     }
 
-    public Reply addReply(Long id, String content) {
-        Discussion discussion = discussionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Discussion not found"));
+    public Reply addReply(Long discussionId, String content) {
+        if (isBlank(content)) {
+            throw new IllegalArgumentException("Reply content is required");
+        }
 
-        Reply reply = new Reply(id, content);
+        Discussion discussion = findDiscussion(discussionId);
+
+        Reply reply = new Reply(discussionId, content);
         Reply savedReply = replyRepository.save(reply);
 
-        discussion.setReplies(discussion.getReplies() + 1);
+        discussion.setReplies(nullToZero(discussion.getReplies()) + 1);
         discussionRepository.save(discussion);
 
         return savedReply;
     }
 
     public Map<String, Object> getDiscussionWithReplies(Long id) {
-        Discussion discussion = discussionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Discussion not found"));
-
+        Discussion discussion = findDiscussion(id);
         List<Reply> replies = replyRepository.findByDiscussionId(id);
 
         Map<String, Object> response = new HashMap<>();
-        response.put("discussion", mapToResponse(discussion));
+        response.put("discussion", toResponse(discussion));
         response.put("replies", replies);
 
         return response;
     }
 
     public void deleteDiscussion(Long id) {
-        if (!discussionRepository.existsById(id)) {
-            throw new RuntimeException("Discussion not found");
-        }
+        findDiscussion(id);
+
+        List<Reply> replies = replyRepository.findByDiscussionId(id);
+        replyRepository.deleteAll(replies);
+
         discussionRepository.deleteById(id);
     }
 
-    private DiscussionResponse mapToResponse(Discussion discussion) {
+    private Discussion findDiscussion(Long id) {
+        return discussionRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Discussion not found with id: " + id));
+    }
+
+    private DiscussionResponse toResponse(Discussion discussion) {
+        int replyCount = replyRepository.findByDiscussionId(discussion.getId()).size();
+
         return new DiscussionResponse(
                 discussion.getId(),
                 discussion.getAuthor(),
                 discussion.getTitle(),
                 discussion.getContent(),
-                discussion.getReplies(),
-                discussion.getLikes(),
-                discussion.getDislikes(),
+                replyCount,
+                nullToZero(discussion.getLikes()),
+                nullToZero(discussion.getDislikes()),
                 discussion.getTimestamp()
         );
+    }
+
+    private boolean isBlank(String value) {
+        return value == null || value.trim().isEmpty();
+    }
+
+    private int nullToZero(Integer value) {
+        return value == null ? 0 : value;
     }
 }
