@@ -8,15 +8,19 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.oceaniq.incident.enums.ReportStatus;
 import com.oceaniq.incident.enums.ReportType;
+import com.oceaniq.region.entity.Region;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 
@@ -38,8 +42,9 @@ public class IncidentReport implements Serializable {
     @Column(name = "contractor_id", nullable = false)
     private Integer contractorId;
 
-    @Column(name = "region_id", nullable = false)
-    private Integer regionId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "region_id", nullable = false)
+    private Region region;
 
     @Enumerated(EnumType.STRING) // uses one of the enum values as reportType which can be financial, etc
     @Column(name = "report_type", nullable = false)
@@ -67,17 +72,18 @@ public class IncidentReport implements Serializable {
         super();
     }
 
-    public IncidentReport(Integer userId, Integer contractorId, Integer regionId, ReportType reportType,
-            String title, String summaryText, ReportStatus status, Date submittedAt) {
-        this.userId = userId;  // assigns the userID value to the userId field
+    public IncidentReport(Integer userId, Integer contractorId, Region region, ReportType reportType,
+        String title, String summaryText, ReportStatus status, Date submittedAt) {
+    
+        this.userId = userId;
         this.contractorId = contractorId;
-        this.regionId = regionId;
+        this.region = region;
         this.reportType = reportType;
         this.title = title;
         this.summaryText = summaryText;
         this.status = status;
         this.submittedAt = submittedAt;
-    }
+}
 
     public Integer getReportId() {
         return reportId;
@@ -103,12 +109,12 @@ public class IncidentReport implements Serializable {
         this.contractorId = contractorId;
     }
 
-    public Integer getRegionId() {
-        return regionId;
+    public Region getRegion() {
+    return region;
     }
 
-    public void setRegionId(Integer regionId) {
-        this.regionId = regionId;
+    public void setRegion(Region region) {
+        this.region = region;
     }
 
     public ReportType getReportType() {
@@ -159,11 +165,10 @@ public class IncidentReport implements Serializable {
         this.createdAt = createdAt;
     }
 
-    @Override // overrides with the toString method to print the report details in a readable
-              // format
+    @Override // overrides with the toString method to print the report details in a readable format
     public String toString() {
         return "Report [reportId=" + reportId + ", userId=" + userId + ", contractorId=" + contractorId
-                + ", regionId=" + regionId + ", reportType=" + reportType + ", title=" + title
+                + ", region=" + region + ", reportType=" + reportType + ", title=" + title
                 + ", status=" + status + ", submittedAt=" + submittedAt + ", createdAt=" + createdAt + "]";
     }
 }
