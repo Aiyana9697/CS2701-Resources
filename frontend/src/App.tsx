@@ -10,7 +10,6 @@ import { Footer } from './components/Footer';
 import { AuthPage } from './components/AuthenticationPage';
 import { HomePage } from './components/home/HomePage';
 import { AdminDashboard } from './components/admin/AdminDashboard';
-import { UserDashboard } from './components/home/UserDashboard';
 
 export default function App() {
   const [currentView, setCurrentView] = useState<'home' | 'auth' | 'dashboard'>('home');
@@ -41,7 +40,7 @@ export default function App() {
           userRole === 'admin' ? (
             <AdminDashboard onLogout={handleLogout} />
           ) : (
-            <UserDashboard onLogout={handleLogout} />
+            <HomePage onLogout={handleLogout} />
           )
         ) : (
           <>
