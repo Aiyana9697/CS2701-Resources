@@ -45,31 +45,24 @@ public class SpeciesService {
      * @return paginated list of SpeciesResponse DTOs
      */
     public Page<SpeciesResponse> getSpecies(
-        String search, 
+        String search,
         SpeciesCategory category,
-        ConservationStatus conservationStatus, 
-        HabitatType habitat, 
+        ConservationStatus conservationStatus,
+        HabitatType habitat,
         ThreatType threat,
         Pageable pageable) {
 
-        Page<Species> species;
-        
-        if (search != null && !search.isBlank()) {
-            species = speciesRepository.searchSpecies(search, pageable);
-        } else if (category != null) {
-            species = speciesRepository.findBySpeciesCategory(category, pageable);
-        } else if (conservationStatus != null) {
-            species = speciesRepository.findByConservationStatus(conservationStatus, pageable);
-        } else if (habitat != null) {
-            species = speciesRepository.findByHabitat(habitat, pageable);
-        } else if (threat != null) {
-            species = speciesRepository.findByThreat(threat, pageable);
-        } else {
-            species = speciesRepository.findAll(pageable);
-        }
-        
-        return species.map(this::convertToResponse);
-    }
+    String normalizedSearch = (search == null || search.isBlank()) ? null : search.trim();
+
+    return speciesRepository.findAllWithFilters(
+            normalizedSearch,
+            category,
+            conservationStatus,
+            habitat,
+            threat,
+            pageable
+    ).map(this::convertToResponse);
+}
 
     /**
      * Retrievs all species in a summary format     *

@@ -86,6 +86,23 @@ public interface SpeciesRepository extends JpaRepository<Species, Long> {
            "LOWER(s.speciesCategory) LIKE LOWER(CONCAT('%', :search, '%'))")
     Page<Species> searchSpecies(@Param("search") String search, Pageable pageable);
     
+    @Query("""
+    SELECT s FROM Species s
+    WHERE (:search IS NULL OR LOWER(s.commonName) LIKE LOWER(CONCAT('%', :search, '%')))
+           OR LOWER(s.scientificName) LIKE LOWER(CONCAT('%', :search, '%')))
+    AND (:category IS NULL OR s.speciesCategory = :category)
+    AND (:conservationStatus IS NULL OR s.conservationStatus = :conservationStatus)
+    AND (:habitat IS NULL OR s.habitat = :habitat)
+    AND (:threat IS NULL OR s.threat = :threat)
+    """)
+    Page<Species> findAllWithFilters(
+            @Param("search") String search,
+            @Param("category") SpeciesCategory category,
+            @Param("conservationStatus") ConservationStatus conservationStatus,
+            @Param("habitat") HabitatType habitat,
+            @Param("threat") ThreatType threat,
+            Pageable pageable
+    );
     /**
      * Retrieve all featured species
      * @return list of featured species
