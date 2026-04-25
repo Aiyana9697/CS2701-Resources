@@ -8,12 +8,20 @@ import com.oceaniq.dataset.repository.DatasetRepository;
 import com.oceaniq.user.entity.User;
 import com.oceaniq.user.repository.UserRepository;
 import com.oceaniq.user.dto.request.FlagRequest;
+import com.oceaniq.region.entity.Region;
+import com.oceaniq.region.repository.RegionRepository;
+import com.oceaniq.species.entity.Species;
+import com.oceaniq.species.repository.SpeciesRepository;
 import com.oceaniq.infrastructure.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import java.time.LocalDate;
 
@@ -33,6 +41,8 @@ public class DatasetService {
     // injecting repositories for dataset management and user management
     private final DatasetRepository datasetRepository;
     private final UserRepository userRepository;
+    private final RegionRepository regionRepository;
+    private final SpeciesRepository speciesRepository;
     
     /**
      * retrieves a paginated list of datasets with optional search, status and category filtering
@@ -50,21 +60,19 @@ public class DatasetService {
      * converts Dataset entities to DatasetResponse DTOs and returns paginated result
     */
     public Page<DatasetResponse> getDatasets(String search, DatasetStatus status,
-        String category, Pageable pageable) {
+        String category, Long regionId, Long speciesId, Pageable pageable) {
 
-        Page<Dataset> datasets;
-        
-        if (search != null && !search.isEmpty()) {
-            datasets = datasetRepository.searchDatasets(search, pageable);
-        } else if (status != null) {
-            datasets = datasetRepository.findByStatus(status, pageable);
-        } else if (category != null) {
-            datasets = datasetRepository.findByCategory(category, pageable);
-        } else {
-            datasets = datasetRepository.findAll(pageable);
-        }
-        
-        return datasets.map(this::convertToResponse);
+        String normalizedSearch = (search == null || search.isBlank()) ? null : search;
+        String normalizedCategory = (category == null || category.isBlank()) ? null : category;
+
+        return datasetRepository.findAllWithFilters(
+                normalizedSearch,
+                status,
+                normalizedCategory,
+                regionId,
+                speciesId,
+                pageable
+        ).map(this::convertToResponse);
     }
 
     /**
@@ -99,6 +107,13 @@ public class DatasetService {
     
     @Transactional
     public DatasetResponse createDataset(CreateDatasetRequest request, Long uploaderId) {
+
+        Region region = regionRepository.findById(request.getRegionId())
+        .orElseThrow(() -> new ResourceNotFoundException("Region not found"));
+
+        Set<Species> species = request.getSpeciesIds() == null ? Set.of()
+        : new HashSet<>(speciesRepository.findAllById(request.getSpeciesIds()));
+
         User uploader = userRepository.findById(uploaderId)
             .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         
@@ -110,7 +125,8 @@ public class DatasetService {
         dataset.setFileSize(request.getFileSize());
         dataset.setFileUrl(request.getFileUrl());
         dataset.setCategory(request.getCategory());
-        dataset.setRegion(request.getRegion());
+        dataset.setRegion(region);
+        dataset.setSpecies(species);
         dataset.setStatus(DatasetStatus.PENDING);
         dataset.setDownloadCount(0);
         
@@ -198,6 +214,7 @@ public class DatasetService {
     // helper method to convert Dataset entity to DatasetResponse DTO
     private DatasetResponse convertToResponse(Dataset dataset) {
         DatasetResponse response = new DatasetResponse();
+
         response.setId(dataset.getId());
         response.setName(dataset.getName());
         response.setDescription(dataset.getDescription());
@@ -208,7 +225,21 @@ public class DatasetService {
         response.setFileUrl(dataset.getFileUrl());
         response.setStatus(dataset.getStatus());
         response.setCategory(dataset.getCategory());
-        response.setRegion(dataset.getRegion());
+        
+        if (dataset.getRegion() != null) {
+            response.setRegionId(dataset.getRegion().getId());
+            response.setRegionName(dataset.getRegion().getName());
+        }
+
+        if (dataset.getSpecies() != null) {
+            response.setSpeciesIds(
+                dataset.getSpecies().stream().map(Species::getId).collect(Collectors.toSet())
+            );
+            response.setSpeciesNames(
+                dataset.getSpecies().stream().map(Species::getCommonName).collect(Collectors.toSet())
+            );
+        }
+
         response.setDownloadCount(dataset.getDownloadCount());
         response.setCreatedAt(dataset.getCreatedAt());
         return response;
