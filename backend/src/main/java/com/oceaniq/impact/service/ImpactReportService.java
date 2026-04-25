@@ -43,32 +43,20 @@ public class ImpactReportService {
      * @return paginated list of ImpactReportResponse DTOs
      */
     public Page<ImpactReportResponse> getReports(
-            String search,
-            ImpactLevel impact,
-            ReportType type,
-            Pageable pageable) {
+        String search,
+        ImpactLevel impact,
+        ReportType type,
+        Pageable pageable) {
 
-        Page<ImpactReport> reports;
+    String normalizedSearch = (search == null || search.isBlank()) ? null : search.trim();
 
-        /**
-         * if search keyword is provided, filters reports by title containing the keyword (case-insensitive)
-         * if impact level is provided, filters reports by impact level
-         * if report type is provided, filters reports by type
-         * if no filters are provided, returns all reports paginated
-         * converts ImpactReport entities to ImpactReportResponse DTOs and returns paginated result
-        */
-        if (search != null && !search.isBlank()) {
-            reports = repository.findByTitleContainingIgnoreCase(search, pageable);
-        } else if (impact != null) {
-            reports = repository.findByImpact(impact, pageable);
-        } else if (type != null) {
-            reports = repository.findByReportType(type, pageable);
-        } else {
-            reports = repository.findAll(pageable);
-        }
-
-        return reports.map(this::convertToResponse);
-    }
+    return repository.findAllWithFilters(
+            normalizedSearch,
+            impact,
+            type,
+            pageable
+    ).map(this::convertToResponse);
+}
 
     /**
      * Create a new impact report
