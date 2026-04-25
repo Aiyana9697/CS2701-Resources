@@ -34,6 +34,18 @@ public interface LearningModuleRepository extends JpaRepository<LearningModule, 
            "LOWER(m.description) LIKE LOWER(CONCAT('%', :search, '%'))")
     Page<LearningModule> searchModules(@Param("search") String search, Pageable pageable);
     
+    @Query("""
+        SELECT m FROM LearningModule m
+        WHERE (:search IS NULL OR LOWER(m.title) LIKE LOWER(CONCAT('%', :search, '%'))
+            OR LOWER(m.description) LIKE LOWER(CONCAT('%', :search, '%')))
+        AND (:category IS NULL OR LOWER(m.category) = LOWER(:category))
+    """)
+    Page<LearningModule> findAllWithFilters(
+            @Param("search") String search,
+            @Param("category") String category,
+            Pageable pageable
+    );
+
     // retrieves all modules ordered by creation date in descending order (newest first)
     List<LearningModule> findAllByOrderByCreatedAtDesc();
 }

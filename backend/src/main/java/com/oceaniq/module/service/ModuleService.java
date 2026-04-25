@@ -48,18 +48,16 @@ public class ModuleService {
      * 
      */
     public Page<ModuleResponse> getModules(String search, String category, Pageable pageable) {
-        Page<LearningModule> modules;
-        
-        if (search != null && !search.isEmpty()) {
-            modules = moduleRepository.searchModules(search, pageable);
-        } else if (category != null) {
-            modules = moduleRepository.findByCategory(category, pageable);
-        } else {
-            modules = moduleRepository.findAll(pageable);
-        }
-        
-        return modules.map(this::convertToResponse);
-    }
+
+    String normalizedSearch = (search == null || search.isBlank()) ? null : search.trim();
+    String normalizedCategory = (category == null || category.isBlank()) ? null : category.trim();
+
+    return moduleRepository.findAllWithFilters(
+            normalizedSearch,
+            normalizedCategory,
+            pageable
+    ).map(this::convertToResponse);
+}
     
     /**
      * retrieves a module by its ID, including user's progress if userId is provided
