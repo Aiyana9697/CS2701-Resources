@@ -201,8 +201,6 @@ INSERT INTO species (
     created_at,
     updated_at
 ) VALUES
-
--- Abyssal Octopus (deep-sea mollusk)
 (
     'Abyssal Octopus',
     'Grimpoteuthis sp.',
@@ -218,8 +216,6 @@ INSERT INTO species (
     NOW() - INTERVAL '90 days',
     NOW()
 ),
-
--- Glass Sponge
 (
     'Glass Sponge',
     'Hexactinellida',
@@ -235,8 +231,6 @@ INSERT INTO species (
     NOW() - INTERVAL '85 days',
     NOW()
 ),
-
--- Yeti Crab
 (
     'Yeti Crab',
     'Kiwa hirsuta',
@@ -252,8 +246,6 @@ INSERT INTO species (
     NOW() - INTERVAL '75 days',
     NOW()
 ),
-
--- Blue Whale
 (
     'Blue Whale',
     'Balaenoptera musculus',
@@ -269,8 +261,6 @@ INSERT INTO species (
     NOW() - INTERVAL '50 days',
     NOW()
 ),
-
--- Mariana Snailfish
 (
     'Mariana Snailfish',
     'Pseudoliparis swirei',
@@ -286,6 +276,7 @@ INSERT INTO species (
     NOW() - INTERVAL '35 days',
     NOW()
 );
+
 -- ============================================
 -- LEARNING MODULES
 -- ============================================
@@ -299,7 +290,6 @@ INSERT INTO learning_modules (
     difficulty_level,
     created_at
 ) VALUES
-
 ('Introduction to Deep Sea Mining',
  'Learn the basics of ocean mineral extraction and its technological challenges',
  'https://images.unsplash.com/photo-1559827260-dc66d52bef19',
@@ -389,6 +379,7 @@ INSERT INTO learning_modules (
  'TECHNOLOGY',
  'ADVANCED',
  NOW() - INTERVAL '10 days');
+
 -- ============================================
 -- DATASETS
 -- ============================================
@@ -536,6 +527,7 @@ INSERT INTO datasets (
  178,
  NOW() - INTERVAL '40 days',
  NOW());
+
 -- ============================================
 -- INCIDENTS / ALERTS
 -- ============================================
@@ -620,6 +612,7 @@ INSERT INTO incident_reports (
  'APPROVED',
  NOW() - INTERVAL '12 days',
  NOW() - INTERVAL '12 days');
+
 -- ============================================
 -- SAVED ITEMS (User Bookmarks)
 -- ============================================
@@ -633,7 +626,6 @@ INSERT INTO saved_items (
     saved_at
 ) VALUES
 
--- Explorer
 (2, 'REGION', 1, 'Clarion-Clipperton Zone',
  'High biodiversity area with critical mining risk',
  'https://images.unsplash.com/photo-1559827260-dc66d52bef19',
@@ -654,7 +646,6 @@ INSERT INTO saved_items (
  NULL,
  NOW() - INTERVAL '2 days'),
 
--- Researcher
 (3, 'DATASET', 3, 'Deep Sea Species Catalog',
  'Comprehensive taxonomic database',
  NULL,
@@ -675,7 +666,6 @@ INSERT INTO saved_items (
  'https://images.unsplash.com/photo-1535591273668-578e31182c4f',
  NOW() - INTERVAL '6 days'),
 
--- Dr. Chen
 (4, 'DATASET', 7, 'EIA Repository - Pacific Region',
  'All Pacific EIA documents',
  NULL,
@@ -691,7 +681,6 @@ INSERT INTO saved_items (
  'https://images.unsplash.com/photo-1559827260-dc66d52bef19',
  NOW() - INTERVAL '8 days'),
 
--- Student Alex
 (6, 'MODULE', 1, 'Introduction to Deep Sea Mining',
  'Beginner fundamentals',
  'https://images.unsplash.com/photo-1559827260-dc66d52bef19',
@@ -728,6 +717,7 @@ INSERT INTO user_stats (
 (4, 18, 45, 67, 5, 980, 18, 22, NOW() - INTERVAL '120 days', NOW()),
 (5, 8, 12, 19, 1, 310, 6, 9, NOW() - INTERVAL '30 days', NOW()),
 (6, 2, 3, 4, 0, 90, 2, 3, NOW() - INTERVAL '15 days', NOW());
+
 -- ============================================
 -- EIA ENTRIES (Environmental Impact Assessments)
 -- ============================================
@@ -774,10 +764,11 @@ INSERT INTO impact_reports (
  6,
  8,
  NOW() - INTERVAL '15 days');
+
 -- ============================================
 -- Print completion message
 -- ============================================
-SELECT 'Database seeding completed successfully! ✅' AS status;
+SELECT 'Database seeding completed successfully!' AS status;
 SELECT 'Total users: ' || COUNT(*) AS summary FROM users;
 SELECT 'Total regions: ' || COUNT(*) AS summary FROM regions;
 SELECT 'Total species: ' || COUNT(*) AS summary FROM species;
