@@ -51,21 +51,17 @@ public class UserService {
      * @param status optional filter for user status
      * @param pageable pagination information (page number, page size, sorting)
      * @return paginated list of users matching the filters
-     */
+    */
     public Page<UserResponse> getUsers(String search, UserRole role,
         UserStatus status, Pageable pageable) {
-        Page<User> users;
+        String normalizedSearch = (search == null || search.isBlank()) ? null : search.trim();
 
-        if (search != null && !search.isBlank()) {
-            users = userRepository.searchUsers(search, pageable);
-        } else if (role != null) {
-            users = userRepository.findByRole(role, pageable);
-        } else if (status != null) {
-            users = userRepository.findByStatus(status, pageable);
-        } else {
-            users = userRepository.findAll(pageable);
-        }
-        return users.map(this::convertToResponse);
+        return userRepository.findAllWithFilters(
+                normalizedSearch,
+                role,
+                status,
+                pageable
+        ).map(this::convertToResponse);
     }
 
 
