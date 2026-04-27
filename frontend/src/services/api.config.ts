@@ -18,11 +18,31 @@ export const apiClient = axios.create({
   timeout: 30000, // 30 seconds
 });
 
+const PUBLIC_GET_PATHS = [
+  '/regions',
+  '/species',
+  '/modules',
+  '/datasets',
+  '/impact',
+  '/api/learn/timeline',
+];
+
+const isPublicGetRequest = (config?: { method?: string; url?: string }) => {
+  const method = (config?.method ?? 'get').toLowerCase();
+  const url = config?.url ?? '';
+
+  if (method !== 'get') {
+    return false;
+  }
+
+  return PUBLIC_GET_PATHS.some((path) => url === path || url.startsWith(`${path}/`) || url.startsWith(`${path}?`));
+};
+
 // Request interceptor to add auth token
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     const token = localStorage.getItem('authToken');
-    if (token && config.headers) {
+    if (token && config.headers && !isPublicGetRequest(config)) {
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
@@ -36,11 +56,11 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
   (response) => response,
   (error: AxiosError) => {
-    if (error.response?.status === 401) {
-      // Unauthorized - clear token and redirect to login
+    if (error.response?.status === 401 && !isPublicGetRequest(error.config)) {
+      // Unauthorized - clear auth and let the SPA route to login cleanly
       localStorage.removeItem('authToken');
       localStorage.removeItem('user');
-      window.location.href = '/auth';
+      window.dispatchEvent(new Event('auth:expired'));
     }
     return Promise.reject(error);
   }

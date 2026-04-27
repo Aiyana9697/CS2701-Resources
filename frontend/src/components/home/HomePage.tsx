@@ -21,6 +21,7 @@ import { SavedItems } from '../home/SavedItemsSection';
 
 interface HomePageProps {
   onLogout?: () => void;
+  onNavigateToTimeline?: () => void;
 }
 
 const navItems = [
@@ -31,7 +32,7 @@ const navItems = [
   { label: 'Impact', icon: TrendingUp, view: 'impact' },
 ];
 
-export function HomePage({ onLogout }: HomePageProps) {
+export function HomePage({ onLogout, onNavigateToTimeline }: HomePageProps) {
   const [activeView, setActiveView] = useState('dashboard');
   const [isCollapsed, setIsCollapsed] = useState(false);
 
@@ -53,7 +54,7 @@ export function HomePage({ onLogout }: HomePageProps) {
       case 'learn':
         return (
           <>
-            <LearningModules />
+            <LearningModules onNavigateToTimelines={onNavigateToTimeline} />
           </>
         );
       case 'research':

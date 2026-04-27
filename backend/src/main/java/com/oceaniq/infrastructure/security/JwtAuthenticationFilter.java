@@ -23,17 +23,36 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     
     private final JwtTokenProvider tokenProvider;
     private final CustomUserDetailsService customUserDetailsService;
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getRequestURI();
+        String method = request.getMethod();
+
+        if (path.startsWith("/api/v1/auth/")) {
+            return true;
+        }
+
+        if (!"GET".equalsIgnoreCase(method)) {
+            return false;
+        }
+
+        return path.equals("/api/v1/regions")
+                || path.startsWith("/api/v1/regions/")
+                || path.equals("/api/v1/species")
+                || path.startsWith("/api/v1/species/")
+                || path.equals("/api/v1/modules")
+                || path.startsWith("/api/v1/modules/")
+                || path.equals("/api/v1/datasets")
+                || path.startsWith("/api/v1/datasets/")
+                || path.equals("/api/v1/impact")
+                || path.startsWith("/api/v1/impact/")
+                || path.equals("/api/learn/timeline");
+    }
     
     @Override
     protected void doFilterInternal(HttpServletRequest request,
         HttpServletResponse response,FilterChain filterChain) throws ServletException, IOException {
-
-        String path = request.getRequestURI();
-
-        if (path.startsWith("/api/v1/auth/")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
 
         try {
             String jwt = getJwtFromRequest(request);

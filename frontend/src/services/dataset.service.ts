@@ -10,6 +10,7 @@ import type {
   DatasetsResponse,
   DatasetQueryParams,
   FlagDatasetRequest,
+  UploadDatasetRequest,
 } from '../types/api';
 
 export const datasetService = {
@@ -27,8 +28,16 @@ export const datasetService = {
   /**
    * Upload a new dataset
    */
-  uploadDataset: async (data: Record<string, unknown>): Promise<ApiResponse<Dataset>> => {
+  uploadDataset: async (data: UploadDatasetRequest): Promise<ApiResponse<Dataset>> => {
     const response = await apiClient.post<ApiResponse<Dataset>>('/datasets', data);
+    return response.data;
+  },
+
+  /**
+   * Increment download count for a dataset
+   */
+  downloadDataset: async (datasetId: number): Promise<ApiResponse<void>> => {
+    const response = await apiClient.post<ApiResponse<void>>(`/datasets/${datasetId}/download`);
     return response.data;
   },
 

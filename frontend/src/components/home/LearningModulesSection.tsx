@@ -37,6 +37,10 @@ import InfographicsHubImage from '../../assets/InfographicsHub.jpeg';
 import GuidedLearningPathsImage from '../../assets/GuidedLearningPaths.jpeg';
 import KnowledgeQuizzesImage from '../../assets/KnowledgeQuizzes.jpeg';
 
+interface LearningModulesProps {
+  onNavigateToTimelines?: () => void;
+}
+
 interface LearningModule {
   id: string;
   icon: any;
@@ -66,7 +70,8 @@ const educationalPortals = [
     title: 'Interactive Timelines',
     description: 'Explore the history of ocean exploration, ISA milestones, UNCLOS, AREA2030, and key environmental events.',
     image: InteractiveTimelinesImage,
-    color: 'teal'
+    color: 'teal',
+    action: 'timelines'
   },
   {
     icon: BarChart3,
@@ -149,7 +154,7 @@ const learningModules: LearningModule[] = [
   },
 ];
 
-export function LearningModules() {
+export function LearningModules({ onNavigateToTimelines }: LearningModulesProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const scroll = (direction: 'left' | 'right') => {
@@ -246,6 +251,11 @@ export function LearningModules() {
 
                   <Button 
                     className="w-full bg-gradient-to-r from-cyan-500/20 to-blue-500/20 text-cyan-300 border border-cyan-400/30 hover:from-cyan-500/30 hover:to-blue-500/30 group/btn"
+                    onClick={() => {
+                      if (portal.action === 'timelines' && onNavigateToTimelines) {
+                        onNavigateToTimelines();
+                      }
+                    }}
                   >
                     <span>Enter Portal</span>
                     <ArrowRight className="w-4 h-4 ml-2 group-hover/btn:translate-x-1 transition-transform" />

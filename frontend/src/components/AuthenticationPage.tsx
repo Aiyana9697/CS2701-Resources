@@ -18,6 +18,7 @@ import { Checkbox } from './ui/checkbox';
 import { Waves, Mail, Lock, User, ArrowLeft, CheckCircle2 } from 'lucide-react';
 import { FloatingParticles } from '../components/shared/FloatingParticles';
 import { ResetPassword } from './ResetPassword';
+import { authService, handleApiError } from '../services';
 
 /* 
 defines the structure of the props the AuthPage component can recieve 
@@ -49,35 +50,40 @@ export function AuthPage({ onBack, onLogin }: AuthPageProps) {
   const [rememberMe, setRememberMe] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [showResetPassword, setShowResetPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formError, setFormError] = useState('');
 
   /*
   Defines a function that runs when the login form is submitted 
   - Stops the page from refreshing when the form is submitted 
   - Prints the form data to the console (placeholder for actual auth logic)
   */  
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Login:', loginData); // placeholder 
+    setFormError('');
 
-    // login logic 
     const email = loginData.email.trim();
     const password = loginData.password.trim();
-    const isAdmin = loginData.email.toLowerCase() === 'admin@oceaniq.com';
 
-    // email follows a proper format 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      alert("Invalid Email Address. Please enter your email address again.");
+      setFormError('Invalid Email Address. Please enter your email address again.');
       return;
     }
-    // check password is at least 8 characters long
     if (password.length < 8) {
-      alert("Password must be at least 8 characters long.");
+      setFormError('Password must be at least 8 characters long.');
       return;
     }
-    // If we get here, login was successful
-    // onLogin() trigger redirects user to 
-    console.log("Login successful!");
-    onLogin?.(isAdmin ? 'admin' : 'user');  
+
+    try {
+      setIsSubmitting(true);
+      const response = await authService.login({ email, password });
+      const role = response.data?.user.role === 'ADMIN' ? 'admin' : 'user';
+      onLogin?.(role);
+    } catch (error) {
+      setFormError(handleApiError(error));
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
 
@@ -87,44 +93,57 @@ export function AuthPage({ onBack, onLogin }: AuthPageProps) {
   - Stops the page from refreshing when the form is submitted 
   - Prints the form data to the console (placeholder for actual auth logic)
   */ 
-  const handleRegister = (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Register:', registerData);
+    setFormError('');
 
-    // registration logic h
     const FullName = registerData.name.trim();
     const email = registerData.email.trim();
     const password = registerData.password.trim();
     const confirmPassword = registerData.confirmPassword.trim();
 
     if (!/^[A-Za-z']+(?:\s+[A-Za-z']+)+$/.test(FullName)) {
-      alert("Invalid Full Name. Please enter your full name (first and last).");
+      setFormError('Invalid Full Name. Please enter your full name (first and last).');
       return;
     }
-    // email validation
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      alert("Invalid Email Address. Please enter your email address again.");
+      setFormError('Invalid Email Address. Please enter your email address again.');
       return;
     }
-    // password validation
     if (password.length < 8) {
-      alert("Password must be at least 8 characters long.")
+      setFormError('Password must be at least 8 characters long.');
       return;
     }
-    // password confirmation
     if (password !== confirmPassword) {
-      alert("Passwords do not match. please re-enter your password.");
+      setFormError('Passwords do not match. please re-enter your password.');
       return;
     }
-    // terms agreement
     if (!agreedToTerms) {
-      alert("Please agree to the terms and conditions before submitting.");
+      setFormError('Please agree to the terms and conditions before submitting.');
       return;
     }
-    // If we get here, registration was successful
-    // registrationSucess if set to true to reflect this
-    console.log("Register successful!");
-    setRegistrationSuccess(true);
+
+    try {
+      setIsSubmitting(true);
+      await authService.register({
+        name: FullName,
+        email,
+        password,
+        confirmPassword,
+      });
+      authService.logout();
+      setRegistrationSuccess(true);
+      setRegisterData({
+        name: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+      });
+    } catch (error) {
+      setFormError(handleApiError(error));
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   /*
@@ -291,6 +310,12 @@ export function AuthPage({ onBack, onLogin }: AuthPageProps) {
                     </TabsTrigger>
                   </TabsList>
 
+                  {formError && (
+                    <div className="px-6 pt-4 text-sm text-red-200">
+                      {formError}
+                    </div>
+                  )}
+
 
                   {/* 
                   Defines the Login form content that appears when the 'Login' tab is selected
@@ -377,8 +402,9 @@ export function AuthPage({ onBack, onLogin }: AuthPageProps) {
                       <Button
                         type="submit"
                         className="w-full bg-cyan-500 hover:bg-cyan-600 text-white shadow-lg shadow-cyan-500/30"
+                        disabled={isSubmitting}
                       >
-                        Sign In
+                        {isSubmitting ? 'Signing In...' : 'Sign In'}
                       </Button>
                     </form>
                   </TabsContent>
@@ -514,21 +540,15 @@ export function AuthPage({ onBack, onLogin }: AuthPageProps) {
                       <Button
                         type="submit"
                         className="w-full bg-cyan-500 hover:bg-cyan-600 text-white shadow-lg shadow-cyan-500/30"
-                        disabled={!agreedToTerms}
+                        disabled={!agreedToTerms || isSubmitting}
                       >
-                        Create Account
+                        {isSubmitting ? 'Creating Account...' : 'Create Account'}
                       </Button>
                     </form>
                   </TabsContent>
                 </Tabs>
               </motion.div>
 
-            /*
-            else (if user wishes to reset their password): 
-            - Reset Password form from ResetPassword component is rendered 
-            - key is used for Framer Motion to animate between components 
-            - handleBackToLogin() is called to hide the reset password form
-            */  
             ) : (
               <ResetPassword
                 key="reset"
