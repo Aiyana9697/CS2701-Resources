@@ -11,7 +11,11 @@ import com.oceaniq.species.repository.SpeciesRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import jakarta.persistence.criteria.JoinType;
 
 import java.util.HashMap;
 import java.util.List;
@@ -44,6 +48,7 @@ public class SpeciesService {
      * @param pageable pagination and sorting configuration
      * @return paginated list of SpeciesResponse DTOs
      */
+    @Transactional(readOnly = true)
     public Page<SpeciesResponse> getSpecies(
         String search,
         SpeciesCategory category,
@@ -52,17 +57,58 @@ public class SpeciesService {
         ThreatType threat,
         Pageable pageable) {
 
-    String normalizedSearch = (search == null || search.isBlank()) ? null : search.trim();
+        Specification<Species> specification = buildSpeciesSpecification(
+                search, category, conservationStatus, habitat, threat);
 
-    return speciesRepository.findAllWithFilters(
-            normalizedSearch,
-            category,
-            conservationStatus,
-            habitat,
-            threat,
-            pageable
-    ).map(this::convertToResponse);
-}
+        return speciesRepository.findAll(specification, pageable).map(this::convertToResponse);
+    }
+
+    private Specification<Species> buildSpeciesSpecification(
+            String search,
+            SpeciesCategory category,
+            ConservationStatus conservationStatus,
+            HabitatType habitat,
+            ThreatType threat) {
+
+        String normalizedSearch = (search == null || search.isBlank()) ? null : search.trim().toLowerCase();
+
+        return (root, query, criteriaBuilder) -> {
+            var predicate = criteriaBuilder.conjunction();
+
+            if (normalizedSearch != null) {
+                String pattern = "%" + normalizedSearch + "%";
+                predicate = criteriaBuilder.and(
+                        predicate,
+                        criteriaBuilder.or(
+                                criteriaBuilder.like(criteriaBuilder.lower(root.get("commonName")), pattern),
+                                criteriaBuilder.like(criteriaBuilder.lower(root.get("scientificName")), pattern)
+                        )
+                );
+            }
+
+            if (category != null) {
+                predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("speciesCategory"), category));
+            }
+
+            if (conservationStatus != null) {
+                predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("conservationStatus"), conservationStatus));
+            }
+
+            if (habitat != null) {
+                predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("habitat"), habitat));
+            }
+
+            if (threat != null) {
+                if (query != null) {
+                    query.distinct(true);
+                }
+                var threatJoin = root.join("threats", JoinType.LEFT);
+                predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(threatJoin, threat));
+            }
+
+            return predicate;
+        };
+    }
 
     /**
      * Retrievs all species in a summary format     *

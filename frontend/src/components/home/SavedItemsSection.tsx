@@ -111,15 +111,15 @@ export function SavedItems() {
   };
 
   return (
-    <section className="py-16 px-8">
+    <section className="py-16 px-4 sm:px-6 lg:px-8">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         className="mb-6"
       >
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="flex min-w-0 items-center gap-3">
             <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 flex items-center justify-center border border-cyan-400/30">
               <Bookmark className="w-6 h-6 text-cyan-400" />
             </div>
@@ -163,7 +163,7 @@ export function SavedItems() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
-              className="flex-shrink-0 w-72"
+              className="flex-shrink-0 w-[min(18rem,calc(100vw-7rem))]"
             >
               <Card className="bg-[#071821]/80 border-cyan-400/30 rounded-3xl overflow-hidden hover:border-cyan-400/60 transition-all hover:shadow-lg hover:shadow-cyan-500/20 group cursor-pointer">
                 <div className="relative h-40 overflow-hidden">

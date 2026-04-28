@@ -97,11 +97,13 @@ export function ImpactAnalysis() {
           />
         </div>
 
-        {error && <div className="mb-4 text-sm text-red-300">{error}</div>}
-
         {loading ? (
           <div className="p-4 bg-slate-900 border border-slate-700 rounded-xl shadow-md text-slate-400">
             Loading impact reports...
+          </div>
+        ) : error ? (
+          <div className="p-4 bg-slate-900 border border-red-500/40 rounded-xl shadow-md text-red-300">
+            {error}
           </div>
         ) : filteredReports.length === 0 ? (
           <div className="p-4 bg-slate-900 border border-slate-700 rounded-xl shadow-md text-slate-400">

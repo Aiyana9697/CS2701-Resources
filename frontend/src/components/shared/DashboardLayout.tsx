@@ -18,7 +18,7 @@ export function DashboardLayout({
   activeView 
 }: DashboardLayoutProps) {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#071821] via-slate-950 to-[#071821] flex relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-b from-[#071821] via-slate-950 to-[#071821] flex relative overflow-x-hidden">
       {/* Floating particles background */}
       <FloatingParticles />
 
@@ -31,13 +31,13 @@ export function DashboardLayout({
           marginLeft: isCollapsed ? '4rem' : '16rem'
         }}
         transition={{ duration: 0.3 }}
-        className="flex-1 relative"
+        className="flex-1 min-w-0 relative"
       >
         {/* Top Bar */}
         {topBar}
 
         {/* Page Content with animated view switching */}
-        <div className="relative min-h-screen">
+        <div className="relative min-h-screen overflow-x-hidden">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeView}

@@ -13,6 +13,7 @@ import com.oceaniq.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,17 +48,41 @@ public class ModuleService {
      * converts LearningModule entities to ModuleResponse DTOs and returns paginated result
      * 
      */
+    @Transactional(readOnly = true)
     public Page<ModuleResponse> getModules(String search, String category, Pageable pageable) {
 
-    String normalizedSearch = (search == null || search.isBlank()) ? null : search.trim();
-    String normalizedCategory = (category == null || category.isBlank()) ? null : category.trim();
+        Specification<LearningModule> specification = buildModuleSpecification(search, category);
+        return moduleRepository.findAll(specification, pageable).map(this::convertToResponse);
+    }
 
-    return moduleRepository.findAllWithFilters(
-            normalizedSearch,
-            normalizedCategory,
-            pageable
-    ).map(this::convertToResponse);
-}
+    private Specification<LearningModule> buildModuleSpecification(String search, String category) {
+        String normalizedSearch = (search == null || search.isBlank()) ? null : search.trim().toLowerCase();
+        String normalizedCategory = (category == null || category.isBlank()) ? null : category.trim().toLowerCase();
+
+        return (root, query, criteriaBuilder) -> {
+            var predicate = criteriaBuilder.conjunction();
+
+            if (normalizedSearch != null) {
+                String pattern = "%" + normalizedSearch + "%";
+                predicate = criteriaBuilder.and(
+                        predicate,
+                        criteriaBuilder.or(
+                                criteriaBuilder.like(criteriaBuilder.lower(root.get("title")), pattern),
+                                criteriaBuilder.like(criteriaBuilder.lower(root.get("description")), pattern)
+                        )
+                );
+            }
+
+            if (normalizedCategory != null) {
+                predicate = criteriaBuilder.and(
+                        predicate,
+                        criteriaBuilder.equal(criteriaBuilder.lower(root.get("category")), normalizedCategory)
+                );
+            }
+
+            return predicate;
+        };
+    }
     
     /**
      * retrieves a module by its ID, including user's progress if userId is provided

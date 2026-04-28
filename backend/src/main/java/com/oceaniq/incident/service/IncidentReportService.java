@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -49,6 +50,7 @@ public class IncidentReportService {
      *
      * @return list of all incident reports
      */
+    @Transactional(readOnly = true)
     public List<IncidentReportResponse> getAllReports() {
         return StreamSupport
                 .stream(incidentReportRepository.findAll().spliterator(), false)
@@ -66,6 +68,7 @@ public class IncidentReportService {
      * @param reportId the ID of the report to retrieve
      * @return the report details if found, otherwise a 404 error
      */
+    @Transactional(readOnly = true)
     public IncidentReportResponse getReportById(Integer reportId) {
         IncidentReport report = incidentReportRepository.findById(reportId)
                 .orElseThrow(() -> new ResourceNotFoundException("Incident report not found"));
@@ -84,6 +87,7 @@ public class IncidentReportService {
      * @param title the title of the report to retrieve
      * @return the report details if found, otherwise a 404 error
      */
+    @Transactional(readOnly = true)
     public IncidentReportResponse getReportByTitle(String title) {
         IncidentReport report = incidentReportRepository.findByTitle(title);
 
@@ -120,7 +124,8 @@ public class IncidentReportService {
         report.setReportType(request.getReportType());
         report.setTitle(request.getTitle());
         report.setSummaryText(request.getSummaryText());
-        report.setStatus(ReportStatus.DRAFT);
+        report.setStatus(ReportStatus.SUBMITTED);
+        report.setSubmittedAt(new Date());
 
         return convertToResponse(incidentReportRepository.save(report));
     }

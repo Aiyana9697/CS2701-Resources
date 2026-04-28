@@ -13,10 +13,16 @@ import com.oceaniq.region.repository.RegionRepository;
 import com.oceaniq.region.entity.Region;
 
 import lombok.RequiredArgsConstructor;
+import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Service responsible for handling business logic related to impact reports
@@ -42,6 +48,7 @@ public class ImpactReportService {
      * @param pageable pagination configuration (page, size, sorting)
      * @return paginated list of ImpactReportResponse DTOs
      */
+    @Transactional(readOnly = true)
     public Page<ImpactReportResponse> getReports(
         String search,
         ImpactLevel impact,
@@ -50,12 +57,27 @@ public class ImpactReportService {
 
     String normalizedSearch = (search == null || search.isBlank()) ? null : search.trim();
 
-    return repository.findAllWithFilters(
-            normalizedSearch,
-            impact,
-            type,
-            pageable
-    ).map(this::convertToResponse);
+    Specification<ImpactReport> specification = (root, query, criteriaBuilder) -> {
+        List<Predicate> predicates = new ArrayList<>();
+
+        if (normalizedSearch != null) {
+            predicates.add(criteriaBuilder.like(
+                    criteriaBuilder.lower(root.get("title")),
+                    "%" + normalizedSearch.toLowerCase(Locale.ROOT) + "%"));
+        }
+
+        if (impact != null) {
+            predicates.add(criteriaBuilder.equal(root.get("impact"), impact));
+        }
+
+        if (type != null) {
+            predicates.add(criteriaBuilder.equal(root.get("reportType"), type));
+        }
+
+        return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+    };
+
+    return repository.findAll(specification, pageable).map(this::convertToResponse);
 }
 
     /**
@@ -95,14 +117,17 @@ public class ImpactReportService {
      * @return ImpactReportResponse DTO
      */
     private ImpactReportResponse convertToResponse(ImpactReport report) {
+        User uploadedBy = report.getUploadedBy();
+        Region region = report.getRegion();
+
         return new ImpactReportResponse(
                 report.getId(),
                 report.getTitle(),
                 report.getReportType(),
                 report.getImpact(),
-                report.getUploadedBy().getName(),
-                report.getRegion().getId(),
-                report.getRegion().getName());
+                uploadedBy != null ? uploadedBy.getName() : "Unknown uploader",
+                region != null ? region.getId() : null,
+                region != null ? region.getName() : "Unknown region");
     }
 
 }

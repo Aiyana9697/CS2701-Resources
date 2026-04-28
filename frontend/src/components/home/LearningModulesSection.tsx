@@ -5,7 +5,7 @@ renders a "Learning Modules" section for the dashboard, which includes:
 Completed modules are displayed in a grid below. The section uses framer-motion for animations and has navigation buttons to scroll through the carousel.
 
 */
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Card } from '../ui/card';
 import { Button } from '../ui/button';
@@ -36,12 +36,14 @@ import InteractiveTimelinesImage from '../../assets/InteractiveTimelines.jpeg';
 import InfographicsHubImage from '../../assets/InfographicsHub.jpeg';
 import GuidedLearningPathsImage from '../../assets/GuidedLearningPaths.jpeg';
 import KnowledgeQuizzesImage from '../../assets/KnowledgeQuizzes.jpeg';
+import { moduleService } from '../../services/module.service';
+import type { LearningModule as BackendLearningModule } from '../../types/api';
 
 interface LearningModulesProps {
   onNavigateToTimelines?: () => void;
 }
 
-interface LearningModule {
+interface DashboardLearningModule {
   id: string;
   icon: any;
   title: string;
@@ -97,7 +99,7 @@ const educationalPortals = [
 ];
 
 
-const learningModules: LearningModule[] = [
+const fallbackLearningModules: DashboardLearningModule[] = [
   {
     id: '1',
     icon: Fish,
@@ -154,8 +156,77 @@ const learningModules: LearningModule[] = [
   },
 ];
 
+const moduleIcons = [Fish, Waves, Anchor, Compass, Ship, Microscope];
+
+const getModuleIcon = (module: BackendLearningModule, index: number) => {
+  const iconName = module.icon?.toLowerCase() ?? '';
+  const title = module.title.toLowerCase();
+
+  if (iconName.includes('wave') || title.includes('ocean') || title.includes('climate')) return Waves;
+  if (iconName.includes('anchor') || title.includes('mining')) return Anchor;
+  if (iconName.includes('compass') || title.includes('navigation') || title.includes('mapping')) return Compass;
+  if (iconName.includes('ship') || title.includes('exploration')) return Ship;
+  if (iconName.includes('microscope') || title.includes('biology') || title.includes('research')) return Microscope;
+  if (iconName.includes('fish') || title.includes('species') || title.includes('marine')) return Fish;
+
+  return moduleIcons[index % moduleIcons.length];
+};
+
+const normalizeStatus = (module: BackendLearningModule): DashboardLearningModule['status'] => {
+  const progress = module.progress ?? 0;
+
+  if (module.status === 'COMPLETED' || module.status === 'completed' || progress >= 100) {
+    return 'completed';
+  }
+
+  if (module.status === 'IN_PROGRESS' || module.status === 'in-progress' || progress > 0) {
+    return 'in-progress';
+  }
+
+  return 'not-started';
+};
+
+const mapBackendModule = (module: BackendLearningModule, index: number): DashboardLearningModule => ({
+  id: String(module.id),
+  icon: getModuleIcon(module, index),
+  title: module.title,
+  progress: module.progress ?? 0,
+  status: normalizeStatus(module),
+  lessons: module.lessonsCount,
+  duration: module.duration,
+});
+
 export function LearningModules({ onNavigateToTimelines }: LearningModulesProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [learningModules, setLearningModules] = useState<DashboardLearningModule[]>(fallbackLearningModules);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadModules = async () => {
+      try {
+        const response = await moduleService.getModules({ page: 0, size: 20 });
+
+        if (!isMounted) {
+          return;
+        }
+
+        if (response.success && response.data?.content?.length) {
+          setLearningModules(response.data.content.map(mapBackendModule));
+        }
+      } catch {
+        if (isMounted) {
+          setLearningModules(fallbackLearningModules);
+        }
+      }
+    };
+
+    loadModules();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const scroll = (direction: 'left' | 'right') => {
     if (scrollContainerRef.current) {
@@ -193,18 +264,18 @@ export function LearningModules({ onNavigateToTimelines }: LearningModulesProps)
     }
   };
 
-  const inProgressModules = learningModules.filter(m => m.status === 'in-progress');
+  const inProgressModules = learningModules.filter(m => m.status !== 'completed');
   const completedModules = learningModules.filter(m => m.status === 'completed');
 
   return (
-    <section id="learn" className="py-9 px-8">
+    <section id="learn" className="py-9 px-4 sm:px-6 lg:px-8">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         className="mb-8"
       >
-        <div className="flex items-center gap-3 mb-4">
+        <div className="flex flex-wrap items-center gap-3 mb-4">
           <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 flex items-center justify-center border border-cyan-400/30">
             <BookOpen className="w-6 h-6 text-cyan-400" />
           </div>
@@ -215,7 +286,7 @@ export function LearningModules({ onNavigateToTimelines }: LearningModulesProps)
         </div>
       </motion.div>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,18rem),1fr))] gap-6">
         {educationalPortals.map((portal, index) => {
           const Icon = portal.icon;
           return (
@@ -267,14 +338,14 @@ export function LearningModules({ onNavigateToTimelines }: LearningModulesProps)
         })}
       </div>
 
-    <section className="py-16 px-8">
+    <section className="py-16 px-0">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         className="mb-8"
       >
-        <div className="flex items-center gap-3 mb-4">
+        <div className="flex flex-wrap items-center gap-3 mb-4">
           <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 flex items-center justify-center border border-cyan-400/30">
             <GraduationCap className="w-6 h-6 text-cyan-400" />
           </div>
@@ -293,14 +364,14 @@ export function LearningModules({ onNavigateToTimelines }: LearningModulesProps)
             size="sm"
             variant="outline"
             onClick={() => scroll('left')}
-            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-[#071821]/90 border-cyan-400/30 text-cyan-400 hover:bg-cyan-500/20 backdrop-blur-sm"
+            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 hidden sm:inline-flex bg-[#071821]/90 border-cyan-400/30 text-cyan-400 hover:bg-cyan-500/20 backdrop-blur-sm"
           >
             <ChevronLeft className="w-4 h-4" />
           </Button>
 
           <div
             ref={scrollContainerRef}
-            className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth pb-4"
+            className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth pb-4 sm:px-10"
             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           >
             {inProgressModules.map((module, index) => {
@@ -312,10 +383,10 @@ export function LearningModules({ onNavigateToTimelines }: LearningModulesProps)
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.1 }}
-                  className="flex-shrink-0 w-80"
+                  className="flex-shrink-0 w-[min(20rem,calc(100vw-7rem))]"
                 >
                   <Card className="bg-gradient-to-br from-[#071821]/90 to-cyan-900/20 border-cyan-400/30 p-6 rounded-3xl hover:border-cyan-400/60 transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/20 h-full">
-                    <div className="flex items-start gap-4 mb-4">
+                    <div className="flex flex-wrap items-start gap-4 mb-4">
                       <div className="w-12 h-12 rounded-2xl bg-cyan-500/20 flex items-center justify-center border border-cyan-400/30">
                         <Icon className="w-6 h-6 text-cyan-400" />
                       </div>
@@ -335,7 +406,7 @@ export function LearningModules({ onNavigateToTimelines }: LearningModulesProps)
                       <Progress value={module.progress} className="h-2" />
                     </div>
 
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-wrap items-center justify-between gap-3">
                       <Badge className={getStatusColor(module.status)}>
                         {getStatusLabel(module.status)}
                       </Badge>
@@ -356,7 +427,7 @@ export function LearningModules({ onNavigateToTimelines }: LearningModulesProps)
             size="sm"
             variant="outline"
             onClick={() => scroll('right')}
-            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-[#071821]/90 border-cyan-400/30 text-cyan-400 hover:bg-cyan-500/20 backdrop-blur-sm"
+            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 hidden sm:inline-flex bg-[#071821]/90 border-cyan-400/30 text-cyan-400 hover:bg-cyan-500/20 backdrop-blur-sm"
           >
             <ChevronRight className="w-4 h-4" />
           </Button>
@@ -366,7 +437,7 @@ export function LearningModules({ onNavigateToTimelines }: LearningModulesProps)
       {/* Completed Modules Grid */}
       <div>
         <h3 className="text-white mb-4">Completed Modules</h3>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,16rem),1fr))] gap-4">
           {completedModules.map((module, index) => {
             const Icon = module.icon;
             return (

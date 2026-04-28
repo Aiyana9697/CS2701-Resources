@@ -5,6 +5,7 @@ import com.oceaniq.module.enums.DifficultyLevel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -20,7 +21,7 @@ import java.util.List;
  * https://stackoverflow.com/questions/13019086/how-to-search-several-columns-in-a-sql-query-using-concat-and-upper
  */
 @Repository
-public interface LearningModuleRepository extends JpaRepository<LearningModule, Long> {
+public interface LearningModuleRepository extends JpaRepository<LearningModule, Long>, JpaSpecificationExecutor<LearningModule> {
     
     // retieves modules filtered by category with pqgination
     Page<LearningModule> findByCategory(String category, Pageable pageable);

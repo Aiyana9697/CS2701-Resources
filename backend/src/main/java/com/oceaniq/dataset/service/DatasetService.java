@@ -13,13 +13,20 @@ import com.oceaniq.region.repository.RegionRepository;
 import com.oceaniq.species.entity.Species;
 import com.oceaniq.species.repository.SpeciesRepository;
 import com.oceaniq.infrastructure.exception.ResourceNotFoundException;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -59,20 +66,51 @@ public class DatasetService {
      * if no filters are provided, returns all datasets paginated
      * converts Dataset entities to DatasetResponse DTOs and returns paginated result
     */
+    @Transactional(readOnly = true)
     public Page<DatasetResponse> getDatasets(String search, DatasetStatus status,
         String category, Long regionId, Long speciesId, Pageable pageable) {
 
-        String normalizedSearch = (search == null || search.isBlank()) ? null : search;
-        String normalizedCategory = (category == null || category.isBlank()) ? null : category;
+        String normalizedSearch = (search == null || search.isBlank()) ? null : search.trim();
+        String normalizedCategory = (category == null || category.isBlank()) ? null : category.trim();
 
-        return datasetRepository.findAllWithFilters(
-                normalizedSearch,
-                status,
-                normalizedCategory,
-                regionId,
-                speciesId,
-                pageable
-        ).map(this::convertToResponse);
+        Specification<Dataset> specification = (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+            Join<Dataset, Species> speciesJoin = root.join("species", JoinType.LEFT);
+
+            if (query != null) {
+                query.distinct(true);
+            }
+
+            if (normalizedSearch != null) {
+                String searchPattern = "%" + normalizedSearch.toLowerCase(Locale.ROOT) + "%";
+                predicates.add(criteriaBuilder.or(
+                        criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), searchPattern),
+                        criteriaBuilder.like(criteriaBuilder.lower(root.get("uploader").get("name")), searchPattern),
+                        criteriaBuilder.like(criteriaBuilder.lower(root.get("region").get("name")), searchPattern),
+                        criteriaBuilder.like(criteriaBuilder.lower(speciesJoin.get("commonName")), searchPattern)
+                ));
+            }
+
+            if (status != null) {
+                predicates.add(criteriaBuilder.equal(root.get("status"), status));
+            }
+
+            if (normalizedCategory != null) {
+                predicates.add(criteriaBuilder.equal(root.get("category"), normalizedCategory));
+            }
+
+            if (regionId != null) {
+                predicates.add(criteriaBuilder.equal(root.get("region").get("id"), regionId));
+            }
+
+            if (speciesId != null) {
+                predicates.add(criteriaBuilder.equal(speciesJoin.get("id"), speciesId));
+            }
+
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        };
+
+        return datasetRepository.findAll(specification, pageable).map(this::convertToResponse);
     }
 
     /**
@@ -218,8 +256,12 @@ public class DatasetService {
         response.setId(dataset.getId());
         response.setName(dataset.getName());
         response.setDescription(dataset.getDescription());
-        response.setUploaderName(dataset.getUploader().getName());
-        response.setUploaderId(dataset.getUploader().getId());
+        if (dataset.getUploader() != null) {
+            response.setUploaderName(dataset.getUploader().getName());
+            response.setUploaderId(dataset.getUploader().getId());
+        } else {
+            response.setUploaderName("Unknown uploader");
+        }
         response.setUploadDate(dataset.getUploadDate());
         response.setFileSize(dataset.getFileSize());
         response.setFileUrl(dataset.getFileUrl());

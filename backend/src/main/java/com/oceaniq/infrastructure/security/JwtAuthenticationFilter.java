@@ -37,17 +37,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return false;
         }
 
-        return path.equals("/api/v1/regions")
-                || path.startsWith("/api/v1/regions/")
-                || path.equals("/api/v1/species")
-                || path.startsWith("/api/v1/species/")
-                || path.equals("/api/v1/modules")
-                || path.startsWith("/api/v1/modules/")
-                || path.equals("/api/v1/datasets")
-                || path.startsWith("/api/v1/datasets/")
-                || path.equals("/api/v1/impact")
-                || path.startsWith("/api/v1/impact/")
-                || path.equals("/api/learn/timeline");
+        return !path.startsWith("/api/v1/admin/");
     }
     
     @Override

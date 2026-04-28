@@ -24,25 +24,27 @@ const PUBLIC_GET_PATHS = [
   '/modules',
   '/datasets',
   '/impact',
+  '/report',
+  '/reportfile',
   '/api/learn/timeline',
 ];
 
-const isPublicGetRequest = (config?: { method?: string; url?: string }) => {
+const isPublicRequest = (config?: { method?: string; url?: string }) => {
   const method = (config?.method ?? 'get').toLowerCase();
   const url = config?.url ?? '';
 
-  if (method !== 'get') {
-    return false;
+  if (method === 'get') {
+    return PUBLIC_GET_PATHS.some((path) => url === path || url.startsWith(`${path}/`) || url.startsWith(`${path}?`));
   }
 
-  return PUBLIC_GET_PATHS.some((path) => url === path || url.startsWith(`${path}/`) || url.startsWith(`${path}?`));
+  return method === 'post' && /^\/datasets\/\d+\/download$/.test(url);
 };
 
 // Request interceptor to add auth token
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     const token = localStorage.getItem('authToken');
-    if (token && config.headers && !isPublicGetRequest(config)) {
+    if (token && config.headers && !isPublicRequest(config)) {
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
@@ -56,7 +58,7 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
   (response) => response,
   (error: AxiosError) => {
-    if (error.response?.status === 401 && !isPublicGetRequest(error.config)) {
+    if (error.response?.status === 401 && !isPublicRequest(error.config)) {
       // Unauthorized - clear auth and let the SPA route to login cleanly
       localStorage.removeItem('authToken');
       localStorage.removeItem('user');

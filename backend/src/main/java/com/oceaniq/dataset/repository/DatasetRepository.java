@@ -5,6 +5,7 @@ import com.oceaniq.dataset.enums.DatasetStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -15,7 +16,7 @@ import org.springframework.stereotype.Repository;
  * defines custom query methods for searching datasets by name/uploader and filtering by status/category/uploader
  */
 @Repository
-public interface DatasetRepository extends JpaRepository<Dataset, Long> {
+public interface DatasetRepository extends JpaRepository<Dataset, Long>, JpaSpecificationExecutor<Dataset> {
     
     /**
      * search datasets by name or uploader name (case-insensitive)

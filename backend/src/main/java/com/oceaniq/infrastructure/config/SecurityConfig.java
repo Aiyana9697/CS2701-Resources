@@ -23,11 +23,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
-import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -74,9 +72,7 @@ public class SecurityConfig {
 
     
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, HandlerMappingIntrospector introspector) throws Exception {
-        MvcRequestMatcher.Builder mvc = new MvcRequestMatcher.Builder(introspector);
-
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
@@ -84,18 +80,10 @@ public class SecurityConfig {
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/v1/auth/**").permitAll()
-                .requestMatchers(mvc.pattern(HttpMethod.GET, "/api/v1/regions")).permitAll()
-                .requestMatchers(mvc.pattern(HttpMethod.GET, "/api/v1/regions/**")).permitAll()
-                .requestMatchers(mvc.pattern(HttpMethod.GET, "/api/v1/species")).permitAll()
-                .requestMatchers(mvc.pattern(HttpMethod.GET, "/api/v1/species/**")).permitAll()
-                .requestMatchers(mvc.pattern(HttpMethod.GET, "/api/v1/modules")).permitAll()
-                .requestMatchers(mvc.pattern(HttpMethod.GET, "/api/v1/modules/**")).permitAll()
-                .requestMatchers(mvc.pattern(HttpMethod.GET, "/api/v1/datasets")).permitAll()
-                .requestMatchers(mvc.pattern(HttpMethod.GET, "/api/v1/datasets/**")).permitAll()
-                .requestMatchers(mvc.pattern(HttpMethod.GET, "/api/v1/impact")).permitAll()
-                .requestMatchers(mvc.pattern(HttpMethod.GET, "/api/v1/impact/**")).permitAll()
-                .requestMatchers(mvc.pattern(HttpMethod.GET, "/api/learn/timeline")).permitAll()
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/v1/datasets/*/download").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/v1/admin/**").authenticated()
+                .requestMatchers(HttpMethod.GET, "/**").permitAll()
                 .anyRequest().authenticated()
             )
             .exceptionHandling(ex -> ex

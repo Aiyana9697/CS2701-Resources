@@ -37,7 +37,7 @@ export function MyStats() {
   const isInView = useInView(metricsRef, { once: true, amount: 0.3 });
 
   return (
-    <section id="dashboard" className="py-9 px-8 scroll-mt-20">
+    <section id="dashboard" className="py-9 px-4 sm:px-6 lg:px-8 scroll-mt-20">
       {/* KPI Stats */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -45,7 +45,7 @@ export function MyStats() {
         viewport={{ once: true }}
         className="mb-12"
       >
-        <div className="flex items-center gap-3 mb-6">
+        <div className="flex flex-wrap items-center gap-3 mb-6">
           <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 flex items-center justify-center border border-cyan-400/30">
             <Activity className="w-6 h-6 text-cyan-400" />
           </div>
@@ -56,7 +56,7 @@ export function MyStats() {
             </p>
           </div>
         </div>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,12rem),1fr))] gap-4">
           {statsData.map((stat, index) => {
             const Icon = stat.icon;
             return (
@@ -93,7 +93,7 @@ export function MyStats() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
       >
-        <div className="flex items-center gap-3 mb-6">
+        <div className="flex flex-wrap items-center gap-3 mb-6">
           <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 flex items-center justify-center border border-cyan-400/30">
             <TrendingUp className="w-6 h-6 text-cyan-400" />
           </div>
@@ -105,7 +105,7 @@ export function MyStats() {
           </div>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,13rem),1fr))] gap-6">
           {metricsData.map((metric, index) => (
             <motion.div
               key={index}
@@ -116,7 +116,7 @@ export function MyStats() {
             >
               <Card className="bg-[#071821]/80 border-cyan-400/30 p-6 rounded-3xl hover:border-cyan-400/60 transition-all">
                 <div className="flex flex-col items-center">
-                  <div className="w-32 h-32 mb-4">
+                  <div className="w-28 h-28 sm:w-32 sm:h-32 mb-4">
                     <CircularProgressbar
                       value={isInView ? metric.value : 0}
                       text={metric.unit ? `${metric.value}${metric.unit}` : `${metric.value}%`}
